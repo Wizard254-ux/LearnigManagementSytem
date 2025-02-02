@@ -129,7 +129,7 @@ export default function NavBar() {
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden transition-opacity duration-300"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden transition-opacity duration-300 pointer-events-auto"
           onClick={() => setIsOpen(false)}
         />
       )}
