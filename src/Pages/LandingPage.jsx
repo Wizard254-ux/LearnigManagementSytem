@@ -10,7 +10,7 @@ export default function Home() {
   const navigate=useNavigate()
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div className="flex flex-col md:flex-row min-h-screen min-w-full bg-gradient-to-br from-blue-50 to-indigo-50">
       {/* Left side - Image container */}
       <div className="w-full md:w-2/3 relative overflow-hidden">
         <div className="absolute inset-0 bg-black/40 z-10" />
@@ -22,19 +22,19 @@ export default function Home() {
         {/* Text overlay */}
         
         <div className="absolute top-0  inset-0 flex flex-col justify-center items-center md:items-start z-20 p-8 pb-[45%] md:p-16">
-        {/* <img
+        <img
           src="https://www.mksu.ac.ke/wp-content/uploads/2018/08/cropped-logohead2.png"
           alt="Machakos University Logo"
           className="h-28 md:h-36 w-28 md:w-36 rounded-full mb-[10%] shadow-lg md:hidden"
-        /> */}
+        />
                 <button onClick={()=>navigate('/Home')} className=" hidden md:block mb-0 md:mb-10 items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
               Proceed to Home
               <ArrowRight size={20} />
             </button>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 pt-[10%] md:pt-0">
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 pt-[10%] md:pt-0">
             Machakos University LMS
           </h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-xl mb-6">
+          <p className="text-lg md:text-xl text-white/90 max-w-xl mb-[20%] md:mb-[5%]">
             Welcome to Machakos University's Learning Management System.
             Excellence in Training, Research, and Service to Humanity.
           </p>
@@ -50,7 +50,7 @@ export default function Home() {
           </div>
 
           {/* Mobile scroll indicator */}
-          <div className="md:hidden absolute bottom-[25%] left-0 right-0 flex flex-col items-center animate-bounce">
+          <div className="md:hidden absolute bottom-[28%] md:bottom-[25%] left-0 right-0 flex flex-col items-center animate-bounce">
             <p className="text-black text-center font-semibold text-lg mb-2">
               {isRegistering ? 'Register for MksU LMS' : 'Login to MksU LMS'}
             </p>
@@ -60,11 +60,11 @@ export default function Home() {
 
         {/* Mobile stats - Visible only on small screens */}
         <div className="md:hidden absolute bottom-20 left-0 right-0 flex justify-center gap-4 z-20 px-8">
-          <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 border border-white/30 flex-1">
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/30 flex-1">
             <p className="text-white font-semibold text-center">20K+</p>
             <p className="text-white/80 text-sm text-center">Enrolled Students</p>
           </div>
-          <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 border border-white/30 flex-1">
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/30 flex-1">
             <p className="text-white font-semibold text-center">7+</p>
             <p className="text-white/80 text-sm text-center">Academic Schools</p>
           </div>
