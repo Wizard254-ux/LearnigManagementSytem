@@ -46,7 +46,7 @@ export default function NavBar() {
                 <img
                   src="https://www.mksu.ac.ke/wp-content/uploads/2018/08/cropped-logohead2.png"
                   alt="Logo"
-                  className="h-16 w-16 rounded-full mt-2"
+                  className="h-12 w-12 rounded-full mt-2"
                 />
               </div>
             </div>
