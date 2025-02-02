@@ -63,11 +63,11 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       <NavBar />
       
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">
         {/* Header with Welcome Message */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 mb-8 text-white">
           <h1 className="text-4xl font-bold mb-2">Welcome Back, John</h1>
@@ -176,7 +176,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      
+
       <Footer/>
     </div>
   );

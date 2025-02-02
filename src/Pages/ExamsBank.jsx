@@ -67,10 +67,10 @@ const ExamsBank = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 ">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
         {/* Navigation Bar */}
         <NavBar />
-      <div className="max-w-7xl mx-auto mt-4">
+      <div className="max-w-7xl mx-auto mt-4 flex-1 w-full mb-4">
         {/* Enhanced Header with gradient background */}
         <div className="mb-8 bg-gradient-to-r from-indigo-600 to-blue-500 rounded-2xl p-8 shadow-lg">
           <h1 className="text-4xl font-bold text-white mb-3 tracking-tight">

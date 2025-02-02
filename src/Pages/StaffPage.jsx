@@ -132,7 +132,7 @@ const LecturerDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-indigo-50">
+    <div className="min-h-screen bg-indigo-50 flex flex-col">
         <NavBar/>
       {/* University Header Banner */}
       {/* <div className="bg-indigo-900 text-white px-6 py-3">
@@ -144,7 +144,7 @@ const LecturerDashboard = () => {
           </div> */}
 
       {/* Department & Lecturer Info */}
-      <div className="bg-indigo-600 text-white px-6 py-8 mx-5 mt-4 rounded-md">
+      <div className="bg-indigo-600 text-white px-6 py-8 mx-5 mt-4 rounded-md flex-1">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-semibold">{universityInfo.name}</h2>
           <div className="mb-4">
@@ -175,7 +175,7 @@ const LecturerDashboard = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-8 flex-1">
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <StatsCard 

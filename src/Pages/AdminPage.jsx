@@ -81,6 +81,7 @@ const LecturerManagementSystem = () => {
       units: ['Computer Architecture'],
       isActive: true,
     },
+  
   ]);
 
   // UI states
@@ -175,10 +176,10 @@ const LecturerManagementSystem = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 ">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
         <NavBar/>
       {/* Header */}
-      <div className='px-10'>
+      <div className='px-10 flex-1'>
       <div className="mb-6 mt-4">
         <h1 className="text-2xl font-bold text-gray-800">Admin Management </h1>
         <p className="text-gray-600">Manage lecturers, departments, and unit assignments</p>
@@ -396,7 +397,7 @@ const LecturerManagementSystem = () => {
 
       {/* Edit Lecturer Modal */}
       {showEditModal && editingLecturer && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed z-[100000000] inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-bold mb-4">Edit Lecturer</h2>
             <div className="space-y-4">
@@ -506,7 +507,7 @@ const LecturerManagementSystem = () => {
 
     </div>
     <Footer/>
-    </div>
+         </div>
   );
 };
 

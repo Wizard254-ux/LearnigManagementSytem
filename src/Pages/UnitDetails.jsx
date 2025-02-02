@@ -55,10 +55,10 @@ const UnitDetail = () => {
   };
 
   return (
-    <div className=" mx-auto pb-6 min-h-screen ">
+    <div className=" mx-auto pb-6 min-h-screen flex flex-col">
         <NavBar />
       {/* Header Section */}
-      <div className='mx-6' style={{}}>
+      <div className='mx-6 flex-1' style={{}} >
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg mt-8 shadow-lg p-8 text-white">
         <h1 className="text-4xl font-bold mb-4">{unitDetails.name}</h1>
         <p className="text-lg opacity-90">{unitDetails.description}</p>

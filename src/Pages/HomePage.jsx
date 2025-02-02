@@ -7,7 +7,7 @@ import Footer from '../Components/Footer';
 const HomePage = () => {
     const navigate=useNavigate()
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* NavBar */}
       <NavBar />
 

@@ -124,9 +124,9 @@ const MyUnits = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-6">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <NavBar />
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto flex-1 w-full">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">My Units</h1>
