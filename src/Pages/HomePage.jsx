@@ -2,6 +2,7 @@ import React from 'react';
 import { Book, Users, Trophy } from 'lucide-react';
 import NavBar from '../Components/NavBar';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../Components/Footer';
 
 const HomePage = () => {
     const navigate=useNavigate()
@@ -88,13 +89,7 @@ const HomePage = () => {
       </div>
 
       {/* Footer Section (Optional) */}
-      <div className="bg-indigo-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-sm">
-            &copy; 2023 Your Learning Platform. All rights reserved.
-          </p>
-        </div>
-      </div>
+    <Footer/>
     </div>
   );
 };

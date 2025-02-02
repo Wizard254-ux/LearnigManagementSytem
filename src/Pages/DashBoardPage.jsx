@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import NavBar from '../Components/NavBar';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../Components/Footer';
 
 const Dashboard = () => {
   const [isSyncing, setIsSyncing] = useState(false);
@@ -175,6 +176,8 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      
+      <Footer/>
     </div>
   );
 };

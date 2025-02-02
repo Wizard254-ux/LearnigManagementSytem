@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Download, Eye, Filter, SortAsc, SortDesc } from 'lucide-react';
 import NavBar from '../Components/NavBar';
+import Footer from '../Components/Footer';
 
 const ExamsBank = () => {
   // ... [Previous state and functions remain the same] ...
@@ -176,6 +177,7 @@ const ExamsBank = () => {
           </table>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

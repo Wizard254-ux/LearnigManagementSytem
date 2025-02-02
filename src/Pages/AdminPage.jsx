@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Plus, Edit2, X, Check } from 'lucide-react';
 import NavBar from '../Components/NavBar';
+import Footer from '../Components/Footer';
 
 const LecturerManagementSystem = () => {
   // Sample data structure for departments, courses, and units
@@ -174,7 +175,7 @@ const LecturerManagementSystem = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 ">
+    <div className="min-h-screen bg-gray-500 ">
         <NavBar/>
       {/* Header */}
       <div className='px-10'>
@@ -502,6 +503,7 @@ const LecturerManagementSystem = () => {
       )}
 
     </div>
+    <Footer/>
     </div>
   );
 };

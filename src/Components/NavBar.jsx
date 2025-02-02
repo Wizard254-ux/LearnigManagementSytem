@@ -102,7 +102,7 @@ export default function NavBar() {
           {navLinks.map((link) => (
             <button
               key={link.name}
-            //   onClick={() => handleNavigation(link.path)}  // Use button with onClick for navigation
+              onClick={() => handleNavigation(link.path)}  // Use button with onClick for navigation
               className="flex items-center space-x-3 px-6 py-3 text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
             >
               {link.icon}

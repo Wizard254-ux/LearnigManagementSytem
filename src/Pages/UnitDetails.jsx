@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Calendar, Book, User, Mail, Clock, FileText } from 'lucide-react';
 import NavBar from '../Components/NavBar';
+import Footer from '../Components/Footer';
 
 const UnitDetail = () => {
   const { unitId } = useParams();
@@ -148,8 +149,9 @@ const UnitDetail = () => {
         </div>
       </div>
       </div>
+      <Footer/>
     </div>
-  );
+  )
 };
 
 export default UnitDetail;

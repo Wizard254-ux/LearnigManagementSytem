@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search, MoreVertical, Users, LayoutGrid, List } from 'lucide-react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 import NavBar from '../Components/NavBar';
+import Footer from '../Components/Footer';
 
 const MyUnits = () => {
   const [viewType, setViewType] = useState('grid');
@@ -184,6 +185,7 @@ const MyUnits = () => {
           <ListView courses={filteredAndSortedCourses} />
         )}
       </div>
+      <Footer/>
     </div>
   );
 };

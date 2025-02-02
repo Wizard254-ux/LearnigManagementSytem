@@ -5,6 +5,7 @@ import {
   MapPin, Building
 } from 'lucide-react';
 import NavBar from '../Components/NavBar';
+import Footer from '../Components/Footer';
 
 const StatsCard = ({ title, value, icon: Icon }) => (
   <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
@@ -270,6 +271,7 @@ const LecturerDashboard = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };
