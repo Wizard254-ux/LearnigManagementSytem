@@ -179,7 +179,7 @@ const LecturerManagementSystem = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col">
         <NavBar/>
       {/* Header */}
-      <div className='px-10 flex-1'>
+      <div className='px-2flex-1'>
       <div className="mb-6 mt-4">
         <h1 className="text-2xl font-bold text-gray-800">Admin Management </h1>
         <p className="text-gray-600">Manage lecturers, departments, and unit assignments</p>
