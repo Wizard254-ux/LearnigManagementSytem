@@ -73,7 +73,7 @@ export default function Home() {
 
       {/* Right side - Auth container */}
       <div className="w-full  md:w-1/3 flex flex-col md:h-screen justify-center items-center p-8">
-      <button className="flex md:hidden items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
+      <button onClick={()=>navigate('/Home')} className="flex md:hidden items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
       Proceed to Home
       <ArrowRight size={20} />
     </button>
