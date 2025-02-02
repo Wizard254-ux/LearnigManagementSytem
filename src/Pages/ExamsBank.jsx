@@ -72,7 +72,7 @@ const ExamsBank = () => {
         <NavBar />
       <div className="max-w-7xl mx-auto mt-4 flex-1 w-full mb-4">
         {/* Enhanced Header with gradient background */}
-        <div className="mb-8 bg-gradient-to-r from-indigo-600 to-blue-500 rounded-2xl sm:p-6 md:p-8 shadow-lg mx-4 md:mx-0">
+        <div className="mb-8 bg-gradient-to-r from-indigo-600 to-blue-500 rounded-2xl p-8 shadow-lg mx-4 md:mx-0">
           <h1 className="md:text-4xl text-2xl font-bold text-white mb-1 md:mb-3 tracking-tight">
             Exams Bank
           </h1>
