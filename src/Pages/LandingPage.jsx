@@ -82,7 +82,7 @@ export default function Home() {
           alt="Machakos University Logo"
           className="h-28 md:h-36 w-28 md:w-36 rounded-full mb-4 shadow-lg"
         />
-        <div className="w-full max-w-md bg-black rounded-2xl shadow-lg p-8">
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
             {isRegistering ? "Create Student Account" : "Student Portal Login"}
           </h2>
