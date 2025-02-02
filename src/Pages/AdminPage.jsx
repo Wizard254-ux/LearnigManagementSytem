@@ -186,7 +186,7 @@ const LecturerManagementSystem = () => {
       </div>
 
       {/* Search and Add Section */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6 flex justify-between items-center">
+      <div className="bg-white rounded-lg shadow p-4 mb-6 flex justify-between gap-2 items-center">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
           <input
