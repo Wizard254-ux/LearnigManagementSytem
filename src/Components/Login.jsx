@@ -27,7 +27,7 @@ const Login = () => {
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
+      <div className="bg-white p-8 rounded-lg shadow-md w-[90%]">
         <h2 className="text-2xl font-semibold mb-4">Login as {role === "student" ? "Student" : "Lecturer"}</h2>
         
         {/* Role Selection */}

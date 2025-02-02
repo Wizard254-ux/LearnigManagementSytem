@@ -10,7 +10,7 @@ export default function Home() {
   const navigate=useNavigate()
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen min-w-full bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div className="flex flex-col md:flex-row min-h-screen m-0 p-0 min-w-full bg-gradient-to-br from-blue-50 to-indigo-50">
       {/* Left side - Image container */}
       <div className="w-full md:w-2/3 relative overflow-hidden">
         <div className="absolute inset-0 bg-black/40 z-10" />
