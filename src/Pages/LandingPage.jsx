@@ -21,8 +21,8 @@ export default function Home() {
         />
         {/* Text overlay */}
         
-        <div className="absolute inset-0 flex flex-col justify-center items-start z-20 p-8 md:p-16">
-                <button onClick={()=>navigate('/Home')} className="flex sm:hidden md:block mb-10 items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
+        <div className="absolute top-0  inset-0 flex flex-col justify-center items-start z-20 p-8 md:p-16">
+                <button onClick={()=>navigate('/Home')} className=" hidden md:block mb-0 md:mb-10 items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
               Proceed to Home
               <ArrowRight size={20} />
             </button>
@@ -67,7 +67,7 @@ export default function Home() {
       </div>
 
       {/* Right side - Auth container */}
-      <div className="w-full md:w-1/3 flex flex-col md:h-screen justify-center items-center p-8">
+      <div className="w-full  md:w-1/3 flex flex-col md:h-screen justify-center items-center p-8">
       <button className="flex md:hidden items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
       Proceed to Home
       <ArrowRight size={20} />
