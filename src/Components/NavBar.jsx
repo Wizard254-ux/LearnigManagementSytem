@@ -79,10 +79,10 @@ export default function NavBar() {
 
       {/* Sliding Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} w-64 bg-white shadow-lg transition-transform duration-300 ease-in-out z-50`}
+        className={`fixed flex flex-col inset-y-0 left-0 h-screen transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} w-64 bg-white shadow-lg transition-transform duration-300 ease-in-out z-50`}
       >
         {/* User Profile Section */}
-        <div className="bg-indigo-700 text-white p-6">
+        <div className="bg-indigo-700 text-white p-6 h-20">
           <div className="flex items-center space-x-3 mb-4">
             {/* <img
               src="/api/placeholder/40/40"
@@ -97,8 +97,8 @@ export default function NavBar() {
         </div>
 
         {/* Navigation Links */}
-        <div className="py-4">
-          <div className="px-4 mb-2 text-sm text-gray-500 uppercase">Main Menu</div>
+        <div className="py-4 h-[70%]  overflow-auto">
+          <div className="px-4 mb-2 text-sm text-gray-500 uppercase ">Main Menu</div>
           {navLinks.map((link) => (
             <button
               key={link.name}
@@ -112,7 +112,7 @@ export default function NavBar() {
         </div>
 
         {/* Bottom Links */}
-        <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200">
+        <div className="border-t border-gray-200 flex-1">
           {bottomLinks.map((link) => (
             <button
               key={link.name}
