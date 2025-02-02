@@ -175,7 +175,7 @@ const LecturerManagementSystem = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-500 ">
+    <div className="min-h-screen bg-gray-100 ">
         <NavBar/>
       {/* Header */}
       <div className='px-10'>
