@@ -206,66 +206,68 @@ const LecturerManagementSystem = () => {
       </div>
 
       {/* Lecturers Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Staff Number</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Units</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {filteredLecturers.map((lecturer) => (
-              <tr key={lecturer.id}>
-                <td className="px-6 py-4">{lecturer.name}</td>
-                <td className="px-6 py-4">{lecturer.staffNumber}</td>
-                <td className="px-6 py-4">{lecturer.department}</td>
-                <td className="px-6 py-4">
-                  <div className="flex flex-wrap gap-1">
-                    {lecturer.units.map((unit) => (
-                      <span key={unit} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                        {unit}
-                      </span>
-                    ))}
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`px-2 py-1 rounded-full text-sm ${
-                      lecturer.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}
-                  >
-                    {lecturer.isActive ? 'Active' : 'Inactive'}
+<div className="bg-white rounded-lg shadow overflow-hidden">
+  <div className="overflow-x-auto"> {/* Add this wrapper for horizontal scrolling */}
+    <table className="w-full">
+      <thead className="bg-gray-50">
+        <tr>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Staff Number</th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Units</th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-gray-200">
+        {filteredLecturers.map((lecturer) => (
+          <tr key={lecturer.id}>
+            <td className="px-6 py-4">{lecturer.name}</td>
+            <td className="px-6 py-4">{lecturer.staffNumber}</td>
+            <td className="px-6 py-4">{lecturer.department}</td>
+            <td className="px-6 py-4">
+              <div className="flex flex-wrap gap-1">
+                {lecturer.units.map((unit) => (
+                  <span key={unit} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                    {unit}
                   </span>
-                </td>
-                <td className="px-6 py-4">
-                  <button
-                    onClick={() => {
-                      setEditingLecturer(lecturer);
-                      setShowEditModal(true);
-                    }}
-                    className="text-indigo-600 hover:text-indigo-900 mr-3"
-                  >
-                    <Edit2 className="h-5 w-5" />
-                  </button>
-                  <button
-                    onClick={() => handleToggleStatus(lecturer)}
-                    className={`${
-                      lecturer.isActive ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900'
-                    }`}
-                  >
-                    {lecturer.isActive ? <X className="h-5 w-5" /> : <Check className="h-5 w-5" />}
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                ))}
+              </div>
+            </td>
+            <td className="px-6 py-4">
+              <span
+                className={`px-2 py-1 rounded-full text-sm ${
+                  lecturer.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                }`}
+              >
+                {lecturer.isActive ? 'Active' : 'Inactive'}
+              </span>
+            </td>
+            <td className="px-6 py-4">
+              <button
+                onClick={() => {
+                  setEditingLecturer(lecturer);
+                  setShowEditModal(true);
+                }}
+                className="text-indigo-600 hover:text-indigo-900 mr-3"
+              >
+                <Edit2 className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => handleToggleStatus(lecturer)}
+                className={`${
+                  lecturer.isActive ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900'
+                }`}
+              >
+                {lecturer.isActive ? <X className="h-5 w-5" /> : <Check className="h-5 w-5" />}
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
 
       {/* Add Lecturer Modal */}
       {showAddModal && (
