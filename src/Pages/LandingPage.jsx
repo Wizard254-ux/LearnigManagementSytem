@@ -25,7 +25,7 @@ export default function Home() {
         <img
           src="https://www.mksu.ac.ke/wp-content/uploads/2018/08/cropped-logohead2.png"
           alt="Machakos University Logo"
-          className="h-28 md:h-36 w-28 md:w-36 rounded-full mb-[10%] shadow-lg md:hidden"
+          className="h-28 absolute top-[2%] md:h-36 w-28 md:w-36 rounded-full mb-[5%] shadow-lg md:hidden"
         />
                 <button onClick={()=>navigate('/Home')} className=" hidden md:block mb-0 md:mb-10 items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
               Proceed to Home
@@ -34,7 +34,7 @@ export default function Home() {
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 pt-[10%] md:pt-0">
             Machakos University LMS
           </h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-xl mb-[20%] md:mb-[5%]">
+          <p className="text-lg md:text-xl text-white/90 max-w-xl mb-[0] md:mb-[5%]">
             Welcome to Machakos University's Learning Management System.
             Excellence in Training, Research, and Service to Humanity.
           </p>
