@@ -31,7 +31,7 @@ const Register = () => {
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-80">
+      <div className="bg-white p-8 rounded-lg shadow-md w-72">
         <h2 className="text-2xl font-semibold mb-4">Register as {role === "student" ? "Student" : "Lecturer"}</h2>
         
         {/* Role Selection */}
