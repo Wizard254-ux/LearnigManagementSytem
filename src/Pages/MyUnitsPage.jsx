@@ -54,7 +54,8 @@ const MyUnits = () => {
 
   // Handle navigation on clicking a course
   const handleUnitClick = (unitId) => {
-    navigate(`/Units/${unitId}`); // Navigate to the detail page with the unitId
+    // navigate(`/Units/${unitId}`); // Navigate to the detail page with the unitId
+    return;
   };
 
   const GridView = ({ courses }) => (

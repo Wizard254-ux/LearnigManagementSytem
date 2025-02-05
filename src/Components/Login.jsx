@@ -1,12 +1,17 @@
 import { useState } from "react";
-import api from "../Auth/api";
+import { useAuthApi, api } from "../Auth/api";
+import { useAuth } from "../Auth/AuthProvider";
+
 
 const Login = () => {
   const [role, setRole] = useState("student"); // 'student' or 'lecturer'
   const [formData, setFormData] = useState({
-    idNumber: "",
+    username: "",
     password: "",
   });
+  const {loginLecAccount}=useAuthApi()
+  const { login } = useAuth();
+  const [loading,setLoading]=useState(false)
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -14,15 +19,35 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const loginEndpoint = role === "student" ? "/api/student/login" : "/api/lecturer/login";
+    setLoading(true)
   
-    try {
-    //   const response = await api.post(loginEndpoint, formData);
-      console.log(formData)
-      console.log("Login successful:");
-    } catch (error) {
-      console.error("Login failed:", error.response?.data || error.message);
+    if(role=="student"){
+      try {
+        // const response = await api.post(registerEndpoint, formData);
+       console.log('studen role')
+        const response=await api.post('api/student/loginStudentAccount',formData)
+        console.log("Registration successful:", response.data);
+        await login(response.data.student)
+      } catch (error) {
+        if(!error.status){
+         alert('check your internet connection and try again')
+        }
+        alert("Error",error.message)
+        console.error("Registration failed:", error.response?.data || error.message);
+      }
+    }else{
+      try {
+
+        const response= await loginLecAccount(formData);
+ 
+      } catch (error) {
+        if(!error.status){
+          alert('check your internet connection and try again')
+        }
+        alert("Error",error.message)
+        console.error("Registration failed:", error.response?.data || error.message);      }
     }
+    setLoading(false)
   };
 
   return (
@@ -44,9 +69,9 @@ const Login = () => {
         <form onSubmit={handleSubmit}>
           <input
             type="text"
-            name="idNumber"
-            placeholder={role === "student" ? "Student Number" : "Staff Number"}
-            value={formData.idNumber}
+            name="username"
+            placeholder={role === "student" ? "username" : "username"}
+            value={formData.username}
             onChange={handleChange}
             className="w-full p-2 mb-4 border rounded"
           />
@@ -58,7 +83,13 @@ const Login = () => {
             onChange={handleChange}
             className="w-full p-2 mb-4 border rounded"
           />
-          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">Login</button>
+           {loading? <div className="w-full flex items-center py-2 justify-center">
+            <i class="fas fa-circle-notch fa-spin" style={{fontSize:27,color:'blue',alignSelf:'center'}}></i>
+              </div>:
+            <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">
+            Login
+            </button>
+}
         </form>
       </div>
     </div>

@@ -9,12 +9,15 @@ import UnitDetail from "./Pages/UnitDetails";
 import ExamsBank from "./Pages/ExamsBank";
 import LecturerProfile from "./Pages/StaffPage";
 import Admin from "./Pages/AdminPage";
+import AdminLogin from "./Pages/AdminLogin";
+import ProtectedRoute from "./Auth/ProtectedRoutes";
 
 function App() {
 
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route element={<ProtectedRoute />}>
       <Route path="/Home" element={<HomePage />} />
       <Route path="/Units" element={<MyUnitsPage />} />
       <Route path="/Dashboard" element={<Dashboard />} />
@@ -22,6 +25,8 @@ function App() {
       <Route path="/ExamsBank" element={< ExamsBank/>} />
       <Route path="/Staff" element={< LecturerProfile/>} />
       <Route path="/Admin" element={< Admin/>} />
+      </Route>
+      <Route path="/AdminLogin" element={< AdminLogin/>} />
     </Routes>
   );
 }

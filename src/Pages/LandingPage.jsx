@@ -10,7 +10,7 @@ export default function Home() {
   const navigate=useNavigate()
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen m-0 p-0 min-w-full bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div className="flex flex-col md:flex-row min-h-screen m-0 p-0 min-w-full bg-gradient-to-br  from-blue-50 to-indigo-50">
       {/* Left side - Image container */}
       <div className="w-full md:w-2/3 relative overflow-hidden">
         <div className="absolute inset-0 bg-black/40 z-10" />
@@ -25,12 +25,12 @@ export default function Home() {
         <img
           src="https://www.mksu.ac.ke/wp-content/uploads/2018/08/cropped-logohead2.png"
           alt="Machakos University Logo"
-          className="h-28 absolute top-[2%] md:h-36 w-28 md:w-36 rounded-full mb-[5%] shadow-lg md:hidden"
+          className="h-28 absolute top-[2%] md:h-36 w-28 md:w-36 md:pt-4 rounded-full mb-[5%] shadow-lg md:hidden"
         />
-                <button onClick={()=>navigate('/Home')} className=" hidden md:block mb-0 md:mb-10 items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
+                {/* <button onClick={()=>navigate('/Home')} className=" hidden md:block mb-0 md:mb-10 items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
               Proceed to Home
               <ArrowRight size={20} />
-            </button>
+            </button> */}
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 pt-[10%] md:pt-0">
             Machakos University LMS
           </h1>
@@ -72,11 +72,11 @@ export default function Home() {
       </div>
 
       {/* Right side - Auth container */}
-      <div className="w-full  md:w-1/3 flex flex-col md:h-screen justify-center items-center p-8">
-      <button onClick={()=>navigate('/Home')} className="flex md:hidden items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
+      <div className="w-full  md:w-1/3 flex flex-col md:h-screen justify-center items-center p-8 overflow-auto">
+      {/* <button onClick={()=>navigate('/Home')} className="flex md:hidden items-center gap-2 bg-blue-600 text-white px-4  rounded-lg hover:bg-blue-700 transition-all">
       Proceed to Home
       <ArrowRight size={20} />
-    </button>
+    </button> */}
         <img
           src="https://www.mksu.ac.ke/wp-content/uploads/2018/08/cropped-logohead2.png"
           alt="Machakos University Logo"

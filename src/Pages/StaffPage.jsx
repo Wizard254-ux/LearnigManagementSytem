@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState,useRef } from 'react';
+import { useAuth } from '../Auth/AuthProvider';
+import { api, getLecUnits } from '../Auth/api';
 import { 
-  Users, BookOpen, Clock, Calendar,
+  Users, BookOpen, Clock, Upload, FileText, 
   Mail, Phone, Award, GraduationCap,
-  MapPin, Building
+  MapPin, Building, Paperclip, Trash2, Eye
 } from 'lucide-react';
 import NavBar from '../Components/NavBar';
 import Footer from '../Components/Footer';
@@ -19,137 +21,349 @@ const StatsCard = ({ title, value, icon: Icon }) => (
   </div>
 );
 
+
 const LecturerDashboard = () => {
+  const user=JSON.parse(localStorage.getItem('user'))
+  console.log(user)
+  const fileInputRef = useRef(null);
+
+  const [categorizedUnits, setCategorizedUnits] = useState([]);
+  const [totalUnits,setTotalUnits]=useState(0)
+  const [teachingUnits,setTeachingUnits]=useState([])
+
+  
+
+  const [assignments, setAssignments] = useState({});
+
+
+  const [submissions, setSubmissions] = useState({
+    "SIT725": {},
+    "SIT737": {},
+    "SIT780": {}
+  });
+
+  const [newAssignment, setNewAssignment] = useState({
+    unit: "",
+    title: "",
+    deadline: "",
+    file: null
+  });
+
+  const [viewSubmissionsModal, setViewSubmissionsModal] = useState({
+    isOpen: false,
+    unit: "",
+    assignmentId: null
+  });
+
   const universityInfo = {
     name: "Machakos University",
-    department: "School of Communication & Information Technology (CIT)",
+    department:user.department,
     campus: "Melbourne Campus",
     facultyName: "Faculty of Science & Technology"
   };
 
   const lecturerInfo = {
-    name: "Dr. Dickson Esamai",
-    staffId: "L1234567",
-    position: "Senior Lecturer",
-    email: "s.mitchell@aiu.edu",
-    phone: "(03) 9123 4567",
-    office: "Building BA, Room 5.23",
-    consultationHours: "Tuesday & Thursday, 2-4 PM"
+    name: user.name,
+    staffId: user.staffNumber,
+    position: " Lecturer",
+    email: user.email,
+    phone: user.phoneNumber,
+    // office: "Building BA, Room 5.23",
+    consultationHours: "On PhoneCall"
   };
 
-  const weeklySchedule = [
-    {
-      day: "Monday",
-      classes: [
-        {
-          time: "10:00 - 12:00",
-          unit: "SIT725",
-          type: "Lecture",
-          location: "Building BA 2.01"
-        },
-        {
-          time: "14:00 - 16:00",
-          unit: "SIT725",
-          type: "Lab",
-          location: "Computing Lab 3.12"
-        }
-      ]
-    },
-    {
-      day: "Tuesday",
-      classes: [
-        {
-          time: "13:00 - 15:00",
-          unit: "SIT737",
-          type: "Lecture",
-          location: "Online"
-        }
-      ]
-    },
-    {
-      day: "Wednesday",
-      classes: [
-        {
-          time: "10:00 - 12:00",
-          unit: "SIT780",
-          type: "Lecture",
-          location: "Building BC 3.02"
-        }
-      ]
-    },
-    {
-      day: "Thursday",
-      classes: [
-        {
-          time: "09:00 - 11:00",
-          unit: "SIT737",
-          type: "Tutorial",
-          location: "Online"
-        }
-      ]
-    },
-    {
-      day: "Friday",
-      classes: [
-        {
-          time: "13:00 - 15:00",
-          unit: "SIT780",
-          type: "Lab",
-          location: "Computing Lab 2.10"
-        }
-      ]
-    }
-  ];
 
-  const teachingUnits = [
-    {
-      code: "SIT725",
-      name: "Software Engineering",
-      students: 120,
-      schedule: "Mon 10:00-12:00, Wed 14:00-16:00",
-      mode: "In-person & Online",
-      campus: "Melbourne Campus",
-      nextClass: "2025-02-03 10:00"
-    },
-    {
-      code: "SIT737",
-      name: "Cloud Computing",
-      students: 85,
-      schedule: "Tue 13:00-15:00, Thu 09:00-11:00",
-      mode: "Online",
-      campus: "Online",
-      nextClass: "2025-02-04 13:00"
-    },
-    {
-      code: "SIT780",
-      name: "Enterprise Applications Development",
-      students: 95,
-      schedule: "Wed 10:00-12:00, Fri 13:00-15:00",
-      mode: "In-person",
-      campus: "Melbourne Campus",
-      nextClass: "2025-02-05 10:00"
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getLecUnits();
+      console.log(response);
+      setTotalUnits(response.totalUnits)
+      setTeachingUnits(response.unitsWithCourses.map((item)=>{
+        return item.unit
+      }))
+      console.log(response.unitsWithCourses)
+      // Group units by course
+      const groupedData = response.unitsWithCourses.reduce((acc, item) => {
+        const courseCode = item.course.code;
+        if (!acc[courseCode]) {
+          acc[courseCode] = {
+            course: item.course,
+            units: []
+          };
+        }
+        acc[courseCode].units.push(item.unit);
+        console.log(teachingUnits,item.unit)
+        return acc;
+      }, {});
+  
+      // Convert the grouped data into an array
+      const categorizedUnits = Object.values(groupedData);
+  
+      // Set the state with the categorized units
+      setCategorizedUnits(categorizedUnits);
+    };
+  
+    fetchData();
+  }, []);
+  
+  
+  const handleAssignmentUpload = (e) => {
+    const { name, value, files } = e.target;
+    
+    if (name === 'file') {
+      // Define allowed file types
+      const allowedTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'text/plain',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      ];
+  
+      // Convert FileList to Array
+      const filesArray = Array.from(files);
+  
+      // Check if any file is not in allowed types
+      const invalidFiles = filesArray.filter(file => !allowedTypes.includes(file.type));
+  
+      if (invalidFiles.length > 0) {
+        alert('Please upload only document files (PDF, DOC, DOCX, TXT, PPT, PPTX, XLS, XLSX)');
+        // Clear the file input
+        e.target.value = '';
+        return;
+      }
+  
+      setNewAssignment(prev => ({
+        ...prev,
+        file: filesArray
+      }));
+    } else {
+      setNewAssignment(prev => ({
+        ...prev,
+        [name]: value
+      }));
     }
-  ];
+  };
+
+  const submitAssignment = async () => {
+    if (!newAssignment.unit || !newAssignment.title || !newAssignment.deadline || !newAssignment.file || newAssignment.file.length === 0) {
+      alert("Please fill in all assignment details and upload at least one file");
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('unit', newAssignment.unit);
+    formData.append('title', newAssignment.title);
+    formData.append('deadline', newAssignment.deadline);
+    
+    // Handle both single and multiple files
+    newAssignment.file.forEach(file => {
+      formData.append('files', file);
+    });
+  
+    try {
+      const response = await api.post('/api/Lec/assignments', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+  
+      console.log('Assignment upload response:', response);
+  
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+  
+      // Update the local state with the new assignment
+      const newAssignmentEntry = {
+        id: Date.now(),
+        title: newAssignment.title,
+        deadline: newAssignment.deadline,
+        fileNames: newAssignment.file.map(file => file.name),
+        submissions: 0
+      };
+  
+      setAssignments(prev => ({
+        ...prev,
+        [newAssignment.unit]: [...(prev[newAssignment.unit] || []), newAssignmentEntry]
+      }));
+  
+      // Reset the form
+      setNewAssignment({
+        unit: "",
+        title: "",
+        deadline: "",
+        file: null
+      });
+  
+      // Show success message
+      alert('Assignment uploaded successfully!');
+  
+    } catch (error) {
+      console.error('Error uploading assignment:', error);
+      alert('Failed to upload assignment. Please try again.');
+    }
+  };
+
+
+  const deleteAssignment = async (unit, assignmentId) => {
+    // Show confirmation dialog
+    const confirmDelete = window.confirm('Are you sure you want to delete this assignment?');
+    
+    if (!confirmDelete) {
+      return;
+    }
+  
+    try {
+      // Make API call to delete the assignment
+      await api.delete(`/api/Lec/assignments/${assignmentId}`);
+  
+      // Safely update assignments state
+
+      setAssignments(prevAssignments => {
+        const updatedAssignments = { ...prevAssignments };
+        
+        if (updatedAssignments[unit] && Array.isArray(updatedAssignments[unit])) {
+          // Log before deletion for debugging
+          console.log('Before deletion:', updatedAssignments[unit]);
+          console.log('Deleting assignment with ID:', assignmentId);
+          
+          // Filter out the deleted assignment using the id property
+          updatedAssignments[unit] = updatedAssignments[unit].filter(
+            assignment => assignment.id !== assignmentId
+          );
+          
+          // Log after deletion for debugging
+          console.log('After deletion:', updatedAssignments[unit]);
+        }
+        
+        return updatedAssignments;
+      });
+      // Safely update submissions state
+      setSubmissions(prev => {
+        const updatedSubmissions = { ...prev };
+        // Check if the unit and assignmentId exist before trying to delete
+        if (updatedSubmissions[unit] && updatedSubmissions[unit][assignmentId]) {
+          const { [assignmentId]: _, ...remainingAssignments } = updatedSubmissions[unit];
+          updatedSubmissions[unit] = remainingAssignments;
+        }
+        return updatedSubmissions;
+      });
+  
+      // Show success message
+      alert('Assignment deleted successfully!');
+      
+    } catch (error) {
+      console.error('Error deleting assignment:', error);
+      alert('Failed to delete assignment. Please try again.');
+    }
+  };
+  const openSubmissionsModal = (unit, assignmentId) => {
+    setViewSubmissionsModal({
+      isOpen: true,
+      unit,
+      assignmentId
+    });
+  };
+
+  const closeSubmissionsModal = () => {
+    setViewSubmissionsModal({
+      isOpen: false,
+      unit: "",
+      assignmentId: null
+    });
+  };
+
+  const addMockSubmission = (unit, assignmentId) => {
+    const studentNames = [
+      "John Doe", "Jane Smith", "Mike Johnson", 
+      "Emily Brown", "Alex Lee", "Sarah Wilson"
+    ];
+
+    const randomStudent = studentNames[Math.floor(Math.random() * studentNames.length)];
+
+    setSubmissions(prev => {
+      const currentSubmissions = prev[unit][assignmentId] || [];
+      return {
+        ...prev,
+        [unit]: {
+          ...prev[unit],
+          [assignmentId]: [
+            ...currentSubmissions,
+            {
+              id: Date.now(),
+              studentName: randomStudent,
+              submissionTime: new Date().toLocaleString(),
+              fileName: `submission_${Math.floor(Math.random() * 1000)}.pdf`
+            }
+          ]
+        }
+      };
+    });
+
+    // Update submissions count in assignments
+    setAssignments(prev => ({
+      ...prev,
+      [unit]: prev[unit].map(assignment => 
+        assignment.id === assignmentId 
+          ? {...assignment, submissions: assignment.submissions + 1} 
+          : assignment
+      )
+    }));
+  };
+
+  useEffect(() => {
+    const fetchAssignments = async () => {
+      try {
+        const response = await api.get('api/Lec/assignments');
+        console.log('fetched assignments', response.data.data);
+        
+        // Organize assignments by unit code
+        const assignmentsByUnit = {};
+        const { assignments: fetchedAssignments } = response.data.data;
+        
+        // Convert the assignments object into our desired format
+        Object.keys(fetchedAssignments).forEach(unitCode => {
+          assignmentsByUnit[unitCode] = fetchedAssignments[unitCode].map(assignment => ({
+            id: assignment.id,
+            title: assignment.title,
+            deadline: assignment.deadline,
+            fileNames: assignment.fileNames,
+            submissions: 0, // You can update this if you have submission data
+            _id: assignment._id // Keep the MongoDB ID for future operations
+          }));
+        });
+        
+        setAssignments(assignmentsByUnit);
+      } catch (error) {
+        console.error('Error fetching assignments:', error);
+        alert('Failed to load assignments. Please try again later.');
+      }
+    };
+    
+    fetchAssignments();
+  }, []);
+  
+  
+
+  console.log('teaching Units',teachingUnits)
 
   return (
     <div className="min-h-screen bg-indigo-50 flex flex-col">
-        <NavBar/>
-      {/* University Header Banner */}
-      {/* <div className="bg-indigo-900 text-white px-6 py-3">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center">
-          <p className="text-indigo-200">{universityInfo.campus}</p>
-          </div>
-          </div>
-          </div> */}
+      <NavBar/>
 
       {/* Department & Lecturer Info */}
       <div className="bg-indigo-600 text-white px-6 py-8 mx-5 mt-4 rounded-md flex-1">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-semibold">{universityInfo.name}</h2>
+          <h2 className="text-3xl font-semibold mb-3">{universityInfo.name}</h2>
           <div className="mb-4">
-            {/* <p className="text-indigo-200">{universityInfo.facultyName}</p> */}
-            <h3 className="text-xl font-semibold">{universityInfo.department}</h3>
+            <h3 className="text-xl font-semibold">{universityInfo.department} Department</h3>
           </div>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div>
@@ -180,12 +394,12 @@ const LecturerDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <StatsCard 
             title="Total Units" 
-            value={teachingUnits.length} 
+            value={totalUnits} 
             icon={BookOpen} 
           />
           <StatsCard 
             title="Total Students" 
-            value={teachingUnits.reduce((sum, unit) => sum + unit.students, 0)} 
+            value={300} 
             icon={Users} 
           />
           <StatsCard 
@@ -195,82 +409,216 @@ const LecturerDashboard = () => {
           />
         </div>
 
-        {/* Weekly Timetable */}
+        {/* Assignment Management */}
         <div className="bg-white rounded-xl shadow-md mb-8">
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center">
-              <Calendar className="h-6 w-6 text-indigo-600 mr-2" />
-              <h2 className="text-xl font-bold text-gray-900">Weekly Timetable</h2>
+              <Upload className="h-6 w-6 text-indigo-600 mr-2" />
+              <h2 className="text-xl font-bold text-gray-900">Assign Assignments</h2>
             </div>
           </div>
           <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              {weeklySchedule.map((day) => (
-                <div key={day.day} className="bg-indigo-50 rounded-lg p-4">
-                  <h3 className="font-semibold text-indigo-900 mb-3">{day.day}</h3>
-                  <div className="space-y-3">
-                    {day.classes.map((session, index) => (
-                      <div key={index} className="bg-white rounded-md p-3 shadow-sm">
-                        <p className="text-sm font-semibold text-indigo-600">{session.time}</p>
-                        <p className="text-sm font-medium text-gray-900">{session.unit}</p>
-                        <p className="text-xs text-gray-600">{session.type}</p>
-                        <p className="text-xs text-gray-600">{session.location}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Unit</label>
+                <select
+                  name="unit"
+                  value={newAssignment.unit}
+                  onChange={handleAssignmentUpload}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                >
+                  <option value="">Select Unit</option>
+                  {teachingUnits.length !== 0 &&
+  teachingUnits.map((unit) => (
+    <option 
+      key={`${unit.code}-${unit._id}`} // Combine unit.code and unit._id for uniqueness
+      value={unit.code}
+    >
+      {unit.code} - {unit.name}
+    </option>
+  ))
+}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Assignment Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={newAssignment.title}
+                  onChange={handleAssignmentUpload}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                  placeholder="Enter assignment title"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Deadline</label>
+                <input
+                  type="datetime-local"
+                  name="deadline"
+                  value={newAssignment.deadline}
+                  onChange={handleAssignmentUpload}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Upload Assignment Document</label>
+                <input
+                  type="file"
+                  name="file"
+                  onChange={handleAssignmentUpload}
+                  ref={fileInputRef}
+                  multiple={true}
+                  accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx"
+                  className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold hover:file:bg-indigo-100"
+                />
+              </div>
+              <div className="col-span-full">
+                <button
+                  onClick={submitAssignment}
+                  className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition-colors"
+                >
+                  Post Assignment
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Teaching Units */}
-        <div className="bg-white rounded-xl shadow-md">
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex items-center">
-              <GraduationCap className="h-6 w-6 text-indigo-600 mr-2" />
-              <h2 className="text-xl font-bold text-gray-900">Teaching Units</h2>
+        {/* Teaching Units with Assignments */}
+        {/* Teaching Units with Assignments */}
+<div className="bg-white rounded-xl shadow-md">
+  <div className="p-6 border-b border-gray-200">
+    <div className="flex items-center">
+      <GraduationCap className="h-6 w-6 text-indigo-600 mr-2" />
+      <h2 className="text-xl font-bold text-gray-900">Teaching Units & Assignments</h2>
+    </div>
+  </div>
+  <div className="p-6">
+    {categorizedUnits.map((category) => (
+      <div key={category.course._id} className="mb-8">
+        <h3 className="text-xl font-semibold text-indigo-600 mb-4">
+          {category.course.code} - {category.course.name}
+        </h3>
+        {category.units.map((unit) => (
+          <div 
+          key={`${unit.code}-${unit._id}`} // Unique key
+          className="bg-indigo-50 rounded-lg p-6 hover:bg-indigo-100 transition-colors mb-6"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {unit.code} - {unit.name}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {unit.description}
+                </p>
+              </div>
+              <div className="bg-indigo-600 text-white px-4 py-2 rounded-full text-sm">
+                {assignments[unit.code]?.length || 0} Assignments
+              </div>
             </div>
+            
+            {/* Assignments for this unit */}
+            {assignments[unit.code]?.length > 0 ? (
+  <div className="space-y-4">
+    {assignments[unit.code].map((assignment) => (
+      <div 
+        key={assignment.id} 
+        className="bg-white rounded-md p-4 shadow-sm flex justify-between items-center"
+      >
+        <div>
+          <h4 className="font-semibold text-indigo-600">{assignment.title}</h4>
+          <p className="text-sm text-gray-600">
+            Deadline: {new Date(assignment.deadline).toLocaleString()}
+          </p>
+          <div className="flex items-center text-sm text-gray-500 mt-1">
+            <Paperclip className="h-4 w-4 mr-2" />
+            {assignment.fileNames.join(', ')} {/* Display all file names */}
           </div>
-          <div className="p-6">
-            <div className="space-y-6">
-              {teachingUnits.map((unit) => (
-                <div 
-                  key={unit.code}
-                  className="bg-indigo-50 rounded-lg p-6 hover:bg-indigo-100 transition-colors"
-                >
-                  <div className="flex flex-col md:flex-row justify-between">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        {unit.code} - {unit.name}
-                      </h3>
-                      <div className="mt-2 space-y-1">
+        </div>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => openSubmissionsModal(unit.code, assignment.id)}
+            className="text-indigo-600 hover:bg-indigo-100 p-2 rounded-full"
+            title="View Submissions"
+          >
+            <Eye className="h-5 w-5" />
+          </button>
+          <button
+            onClick={() => deleteAssignment(unit.code, assignment.id)}
+            className="text-red-600 hover:bg-red-100 p-2 rounded-full"
+            title="Delete Assignment"
+          >
+            <Trash2 className="h-5 w-5" />
+          </button>
+          <span className="text-sm text-gray-600">
+            {assignment.submissions} Submissions
+          </span>
+        </div>
+      </div>
+    ))}
+  </div>
+            ) : (
+              <p className="text-sm text-gray-500">No assignments posted for this unit</p>
+            )}
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
+      </div>
+
+      {/* Submissions Modal */}
+      {viewSubmissionsModal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-gray-900">
+                Assignment Submissions
+              </h2>
+              <button 
+                onClick={closeSubmissionsModal}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-6">
+              <button 
+                onClick={() => addMockSubmission(viewSubmissionsModal.unit, viewSubmissionsModal.assignmentId)}
+                className="mb-4 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+              >
+                Add Mock Submission
+              </button>
+              {submissions[viewSubmissionsModal.unit][viewSubmissionsModal.assignmentId] ? (
+                <div className="space-y-4">
+                  {submissions[viewSubmissionsModal.unit][viewSubmissionsModal.assignmentId].map((submission) => (
+                    <div 
+                      key={submission.id} 
+                      className="bg-indigo-50 rounded-md p-4 flex justify-between items-center"
+                    >
+                      <div>
+                        <p className="font-semibold text-indigo-600">{submission.studentName}</p>
                         <p className="text-sm text-gray-600">
-                          <span className="font-medium">Schedule:</span> {unit.schedule}
+                          Submitted: {submission.submissionTime}
                         </p>
-                        <p className="text-sm text-gray-600">
-                          <span className="font-medium">Mode:</span> {unit.mode}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          <span className="font-medium">Campus:</span> {unit.campus}
-                        </p>
+                        <div className="flex items-center text-sm text-gray-500 mt-1">
+                          <Paperclip className="h-4 w-4 mr-2" />
+                          {submission.fileName}
+                        </div>
                       </div>
                     </div>
-                    <div className="mt-4 md:mt-0 flex flex-col items-end">
-                      <div className="bg-indigo-600 text-white px-4 py-2 rounded-full text-sm">
-                        {unit.students} Students
-                      </div>
-                      <div className="mt-2 text-sm text-gray-600">
-                        Next Class: {new Date(unit.nextClass).toLocaleString()}
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
+              ) : (
+                <p className="text-sm text-gray-500">No submissions yet</p>
+              )}
             </div>
           </div>
         </div>
-      </div>
+      )}
       <Footer/>
     </div>
   );

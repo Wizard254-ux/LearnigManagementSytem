@@ -2,27 +2,35 @@ import React, { useState } from 'react';
 import { 
   Menu, Bell, MessageCircle, ChevronDown, X, Home, 
   LayoutDashboard, BookOpen, GraduationCap, Settings, 
-  HelpCircle, LogOut 
+  HelpCircle, LogOut, 
+  LogOutIcon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../Auth/AuthProvider';
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();  // Initialize the navigate function
+  const user=JSON.parse(localStorage.getItem('user'))
+  const {logout}=useAuth()
   
   const navLinks = [
-    { name: 'Home', path: '/Home', icon: <Home size={20} /> },
-    { name: 'Dashboard', path: '/Dashboard', icon: <LayoutDashboard size={20} /> },
-    { name: 'Exams Bank', path: '/ExamsBank', icon: <BookOpen size={20} /> },
-    { name: 'My Units', path: '/Units', icon: <GraduationCap size={20} /> },
-    { name: 'Lecturer Profile', path: '/Staff', icon: <GraduationCap size={20} /> },
-    { name: 'Admin', path: '/Admin', icon: <GraduationCap size={20} /> },
-  ];
+    { name: 'Home', path: '/Home', icon: <Home size={20} />,roles:["student","lecturer","admin"] },
+  { name: 'Dashboard', path: '/Dashboard', icon: <LayoutDashboard size={20} />,roles:["student"] },
+  { name: 'Exams Bank', path: '/ExamsBank', icon: <BookOpen size={20} />,roles:["student"] },
+  { name: 'My Units', path: '/Units', icon: <GraduationCap size={20} />,roles:["student"] },
+  { name: 'Lecturer Profile', path: '/Staff', icon: <GraduationCap size={20} />, roles: ['lecturer'] },
+  { name: 'Admin', path: '/Admin', icon: <GraduationCap size={20} />, roles: ['admin'] },
+];
+
+// Filter links based on the user's role
+const filteredNavLinks = navLinks.filter(link => 
+  !link.roles || link.roles.includes(user?.role)
+);
 
   const bottomLinks = [
     { name: 'Settings', path: '', icon: <Settings size={20} /> },
     { name: 'Help & Support', path: '', icon: <HelpCircle size={20} /> },
-    { name: 'Logout', path: '', icon: <LogOut size={20} /> },
   ];
 
   const handleNavigation = (path) => {
@@ -46,22 +54,30 @@ export default function NavBar() {
                 <img
                   src="https://www.mksu.ac.ke/wp-content/uploads/2018/08/cropped-logohead2.png"
                   alt="Logo"
-                  className="h-12 w-12 rounded-full mt-2"
+                  className="h-12 w-12 md:h-16 md:w-16 rounded-full mt-2"
                 />
               </div>
+              <span className='ml-3 font-semibold text-lg tracking-wider'>Mksu</span>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex space-x-4">
-              {navLinks.map((link) => (
+              {filteredNavLinks.map((link) => (
                 <button
                   key={link.name}
                   onClick={() => handleNavigation(link.path)}  // Use button with onClick for navigation
-                  className="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-600 transition-colors"
+                  className="px-3 py-2 rounded-md text-lg font-medium hover:bg-indigo-600 transition-colors"
                 >
                   {link.name}
                 </button>
               ))}
+                <button
+                  key={"Logout"}
+                  onClick={logout}  // Use button with onClick for navigation
+                  className="px-3 py-2 rounded-md text-lg font-medium hover:text-white hover:bg-red-800 text-red-600 transition-colors"
+                >
+                  Logout
+                </button>
             </div>
 
             {/* Right side icons */}
@@ -99,7 +115,7 @@ export default function NavBar() {
         {/* Navigation Links */}
         <div className="py-4 h-[70%]  overflow-auto">
           <div className="px-4 mb-2 text-sm text-gray-500 uppercase ">Main Menu</div>
-          {navLinks.map((link) => (
+          {filteredNavLinks.map((link) => (
             <button
               key={link.name}
               onClick={() => handleNavigation(link.path)}  // Use button with onClick for navigation
@@ -123,6 +139,14 @@ export default function NavBar() {
               <span>{link.name}</span>
             </button>
           ))}
+            <button
+              key={"Logout"}
+              onClick={logout}  // Use button with onClick for navigation
+              className="flex items-center space-x-3 px-6 py-3 text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+            >
+              <LogOutIcon size={20} color='red' />
+              <span>Log-out</span>
+            </button>
         </div>
       </div>
 

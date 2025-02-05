@@ -1,37 +1,43 @@
 import { createContext,useContext,useState } from "react";
-import { REFRESH_TOKEN,ACCESS_TOKEN } from "../../constants";
+import { useNavigate } from 'react-router-dom';
+import { api } from "./api";
 const AuthContext=createContext()
+let globalLogout=()=>{}
 export const useAuth=()=>(
     useContext(AuthContext)
 )
 export const AuthProvider=({children})=>{
+    const navigate = useNavigate();
     const [user,setUser]=useState({})
     const [isAuthorized,setIsAuthorized]=useState(false)
     
    
-    const login=async(accessToken,refreshToken)=>{
+    const login=async(data)=>{
         try{
-             localStorage.setItem(ACCESS_TOKEN,accessToken);
-             localStorage.setItem(REFRESH_TOKEN, refreshToken);
+ 
+            localStorage.setItem('user',JSON.stringify(data))
             setIsAuthorized(true)
             console.log('in here Tabs')
+            navigate('/Home')
            return                   
         }catch(error){
             console.log(error)
         }
     }
 
-    const logout=async(navigation)=>{
+    const logout=async()=>{
    try{
-        navigation.navigate('LandingPage')
-         localStorage.removeItem(ACCESS_TOKEN);
-         localStorage.removeItem(REFRESH_TOKEN);
+        const res=await api.post('api/user/logout')
+        console.log(res)
         setIsAuthorized(false)
-        setUser({})
+        localStorage.clear()
+        navigate('/')
    }catch(error){
     console.log(error)
    }   
          }
+
+         globalLogout=logout
    
 
     return (
@@ -40,4 +46,7 @@ export const AuthProvider=({children})=>{
         </AuthContext.Provider>
     )
 }
+
+export const getGlobalLogout = () => globalLogout;
+
 

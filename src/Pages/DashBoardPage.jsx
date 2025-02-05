@@ -1,55 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   BookOpen, Calendar, Clock,
   RefreshCw, Award, Book, 
   FileText, BarChart2,
-  ChevronRight
+  ChevronRight, Paperclip
 } from 'lucide-react';
 import NavBar from '../Components/NavBar';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../Components/Footer';
+import { api } from '../Auth/api';
 
 const Dashboard = () => {
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSync, setLastSync] = useState('2 hours ago');
+  const [courseData, setCourseData] = useState(null); // State to store fetched course data
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user'));
 
-  const registeredUnits = [
-    { 
-      code: 'SIT120', 
-      name: 'Programming Methodology',
-      status: 'synced',
-      lastUpdated: '1 hour ago'
-    },
-    { 
-      code: 'SIT180', 
-      name: 'Computer and Society',
-      status: 'pending',
-      lastUpdated: '3 hours ago'
-    },
-    {
-      code: 'SIT190', 
-      name: 'Foundations of Mathematics for IT',
-      status: 'error',
-      lastUpdated: '2 hours ago'
-    }
-  ];
+  // Fetch course data from the backend
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get('api/student/getStudentCourseDetails');
+        console.log(response.data);
+        setCourseData(response.data); // Store the fetched data in state
+      } catch (error) {
+        console.log(error);
+        alert('An error occurred. Please try again.');
+      }
+    };
 
-  const upcomingDeadlines = [
-    {
-      unit: 'SIT120',
-      task: 'Assignment 2',
-      dueDate: '2025-02-15',
-      type: 'assignment'
-    },
-    {
-      unit: 'SIT180',
-      task: 'Mid-term Quiz',
-      dueDate: '2025-02-10',
-      type: 'quiz'
-    }
-  ];
+    fetchData();
+  }, []);
 
+  // Handle sync button click
   const handleSync = () => {
     setIsSyncing(true);
     setTimeout(() => {
@@ -58,9 +42,30 @@ const Dashboard = () => {
     }, 2000);
   };
 
+  // Handle unit click
   const handleUnitClick = (unitId) => {
-    navigate(`/Units/${unitId}`);
+    // navigate(`/Units/${unitId}`);
+    return
   };
+
+  // Extract registered units from the fetched data
+  const registeredUnits = courseData?.units.map((unit) => ({
+    code: unit.code, // Use unit ID as the code
+    name: unit.name,
+    status: 'synced', // Default status (can be updated based on backend data)
+    lastUpdated: '1 hour ago' // Default last updated time
+  })) || [];
+
+  // Extract upcoming deadlines from the fetched data
+  const upcomingDeadlines = courseData?.units.flatMap((unit) =>
+    unit.assignments.map((assignment) => ({
+      unit: unit.name,
+      task: assignment.Title,
+      dueDate: assignment.submissionDeadline,
+      type: 'assignment',
+      fileNames: assignment.fileNames // Include fileNames in the deadlines
+    }))
+  ) || [];
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -70,7 +75,7 @@ const Dashboard = () => {
       <div className="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">
         {/* Header with Welcome Message */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 mb-8 text-white">
-          <h1 className="text-4xl font-bold mb-2">Welcome Back, John</h1>
+          <h1 className="text-4xl font-bold mb-2">Welcome Back, {user.username}</h1>
           <p className="opacity-90">Track your academic progress and upcoming deadlines</p>
           
           {/* Stats Cards */}
@@ -79,7 +84,7 @@ const Dashboard = () => {
               <div className="flex items-center gap-3">
                 <BookOpen className="h-8 w-8" />
                 <div>
-                  <p className="text-2xl font-bold">3</p>
+                  <p className="text-2xl font-bold">{courseData?.units.length || 0}</p>
                   <p className="text-sm opacity-90">Enrolled Units</p>
                   <p className="text-xs opacity-75">Current Semester</p>
                 </div>
@@ -163,6 +168,20 @@ const Dashboard = () => {
                   <div>
                     <h3 className="font-semibold text-gray-800">{deadline.task}</h3>
                     <p className="text-sm text-gray-500">{deadline.unit}</p>
+                    {/* Display file download links */}
+                    <div className="flex items-center text-sm text-gray-500 mt-1">
+                      <Paperclip className="h-4 w-4 mr-2" />
+                      {deadline.fileNames.map((fileName, fileIndex) => (
+                        <a
+                          key={fileIndex}
+                          href={`${api.defaults.baseURL}api/file/download/${fileName}`} // Replace with your backend URL
+                          download
+                          className="text-indigo-600 hover:underline mr-2"
+                        >
+                          {fileName}
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
