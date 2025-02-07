@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import NavBar from '../Components/NavBar';
 import Footer from '../Components/Footer';
+import CustomAlert from '../Components/CustomAlert';
 
 const StatsCard = ({ title, value, icon: Icon }) => (
   <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
@@ -30,17 +31,30 @@ const LecturerDashboard = () => {
   const [categorizedUnits, setCategorizedUnits] = useState([]);
   const [totalUnits,setTotalUnits]=useState(0)
   const [teachingUnits,setTeachingUnits]=useState([])
-
-  
-
   const [assignments, setAssignments] = useState({});
-
-
   const [submissions, setSubmissions] = useState({
     "SIT725": {},
     "SIT737": {},
     "SIT780": {}
   });
+  const [alertConfigs, setAlertConfigs] = useState({
+    show:false,
+    message:'',
+    status:'',
+    title:''
+  });
+  
+  const handleShowAlert = (title,status,message) => {
+    setAlertConfigs({
+      show:true,
+      title:title,
+      status:status,
+      message:message
+    })
+    // Auto hide after 3 seconds
+    // setTimeout(setAlertConfigs(prev=>({...prev,['show']:false})), 3000);
+  };
+
 
   const [newAssignment, setNewAssignment] = useState({
     unit: "",
@@ -77,32 +91,41 @@ const LecturerDashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getLecUnits();
-      console.log(response);
-      setTotalUnits(response.totalUnits)
-      setTeachingUnits(response.unitsWithCourses.map((item)=>{
-        return item.unit
-      }))
-      console.log(response.unitsWithCourses)
-      // Group units by course
-      const groupedData = response.unitsWithCourses.reduce((acc, item) => {
-        const courseCode = item.course.code;
-        if (!acc[courseCode]) {
-          acc[courseCode] = {
-            course: item.course,
-            units: []
-          };
+      try{
+        const response = await getLecUnits();
+        console.log(response);
+        setTotalUnits(response.totalUnits)
+        setTeachingUnits(response.unitsWithCourses.map((item)=>{
+          return item.unit
+        }))
+        console.log(response.unitsWithCourses)
+        // Group units by course
+        const groupedData = response.unitsWithCourses.reduce((acc, item) => {
+          const courseCode = item.course.code;
+          if (!acc[courseCode]) {
+            acc[courseCode] = {
+              course: item.course,
+              units: []
+            };
+          }
+          acc[courseCode].units.push(item.unit);
+          console.log(teachingUnits,item.unit)
+          return acc;
+        }, {});
+    
+        // Convert the grouped data into an array
+        const categorizedUnits = Object.values(groupedData);
+    
+        // Set the state with the categorized units
+        setCategorizedUnits(categorizedUnits);
+
+      }catch (error) {
+        console.log(error);
+        if(!error.status){
+          handleShowAlert("Error","error","check your internet connection and try again")
         }
-        acc[courseCode].units.push(item.unit);
-        console.log(teachingUnits,item.unit)
-        return acc;
-      }, {});
-  
-      // Convert the grouped data into an array
-      const categorizedUnits = Object.values(groupedData);
-  
-      // Set the state with the categorized units
-      setCategorizedUnits(categorizedUnits);
+        handleShowAlert("Error","error",error.response.data.message)
+      }
     };
   
     fetchData();
@@ -205,9 +228,13 @@ const LecturerDashboard = () => {
       // Show success message
       alert('Assignment uploaded successfully!');
   
-    } catch (error) {
-      console.error('Error uploading assignment:', error);
-      alert('Failed to upload assignment. Please try again.');
+    }catch (error) {
+      console.log(error);
+      if(!error.status){
+        handleShowAlert("Error","error","check your internet connection and try again")
+      }
+      handleShowAlert("Error","error",error.response.data.message)
+      setLoading(false)
     }
   };
 
@@ -260,8 +287,11 @@ const LecturerDashboard = () => {
       alert('Assignment deleted successfully!');
       
     } catch (error) {
-      console.error('Error deleting assignment:', error);
-      alert('Failed to delete assignment. Please try again.');
+      console.log(error);
+      if(!error.status){
+        handleShowAlert("Error","error","check your internet connection and try again")
+      }
+      handleShowAlert("Error","error",error.response.data.message)
     }
   };
   const openSubmissionsModal = (unit, assignmentId) => {
@@ -342,8 +372,11 @@ const LecturerDashboard = () => {
         
         setAssignments(assignmentsByUnit);
       } catch (error) {
-        console.error('Error fetching assignments:', error);
-        alert('Failed to load assignments. Please try again later.');
+        console.log(error);
+        if(!error.status){
+          handleShowAlert("Error","error","check your internet connection and try again")
+        }
+        handleShowAlert("Error","error",error.response.data.message)
       }
     };
     
@@ -357,6 +390,13 @@ const LecturerDashboard = () => {
   return (
     <div className="min-h-screen bg-indigo-50 flex flex-col">
       <NavBar/>
+      <CustomAlert
+        show={alertConfigs.show}
+        title={alertConfigs.title}
+        message={alertConfigs.message}
+        status={alertConfigs.status} // or "error"
+        onClose={() => setAlertConfigs(prev=>({...prev,['show']:false}))}
+      />
 
       {/* Department & Lecturer Info */}
       <div className="bg-indigo-600 text-white px-6 py-8 mx-5 mt-4 rounded-md flex-1">

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuthApi, api } from "../Auth/api";
 import { useAuth } from "../Auth/AuthProvider";
+import CustomAlert from "./CustomAlert";
 
 
 const Login = () => {
@@ -12,6 +13,25 @@ const Login = () => {
   const {loginLecAccount}=useAuthApi()
   const { login } = useAuth();
   const [loading,setLoading]=useState(false)
+
+  const [alertConfigs, setAlertConfigs] = useState({
+    show:false,
+    message:'',
+    status:'',
+    title:''
+  });
+  
+  const handleShowAlert = (title,status,message) => {
+    setAlertConfigs({
+      show:true,
+      title:title,
+      status:status,
+      message:message
+    })
+    // Auto hide after 3 seconds
+    // setTimeout(setAlertConfigs(prev=>({...prev,['show']:false})), 3000);
+  };
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,11 +50,13 @@ const Login = () => {
         await login(response.data.student)
       } catch (error) {
         if(!error.status){
-         alert('check your internet connection and try again')
+         handleShowAlert("Error","error","check your internet connection and try again")
         }
-        alert("Error",error.message)
-        console.error("Registration failed:", error.response?.data || error.message);
+
+        handleShowAlert("Error","error",error.response.data.message)
+        console.error("Registration failed:",error, error.response?.data || error.message);
       }
+      setLoading(false)
     }else{
       try {
 
@@ -42,9 +64,9 @@ const Login = () => {
  
       } catch (error) {
         if(!error.status){
-          alert('check your internet connection and try again')
+          handleShowAlert("Error","error","check your internet connection and try again")
         }
-        alert("Error",error.message)
+        handleShowAlert("Error","error",error.response.data.message)
         console.error("Registration failed:", error.response?.data || error.message);      }
     }
     setLoading(false)
@@ -52,6 +74,13 @@ const Login = () => {
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-100 ">
+       <CustomAlert
+        show={alertConfigs.show}
+        title={alertConfigs.title}
+        message={alertConfigs.message}
+        status={alertConfigs.status} // or "error"
+        onClose={() => setAlertConfigs(prev=>({...prev,['show']:false}))}
+      />
       <div className="bg-white p-8 rounded-lg shadow-md w-72">
         <h2 className="text-2xl font-semibold mb-4">Login as {role === "student" ? "Student" : "Lecturer"}</h2>
         

@@ -3,6 +3,7 @@ import { Lock, User, BookOpen, GraduationCap, Users } from 'lucide-react';
 import { api } from '../Auth/api';
 import { ChevronDown } from 'lucide-react';
 import { useAuth } from '../Auth/AuthProvider';
+import CustomAlert from '../Components/CustomAlert';
 
 const AdminLogin = () => {
     const { login } = useAuth();
@@ -11,6 +12,24 @@ const AdminLogin = () => {
         password: ''
     });
     const [loading, setLoading] = useState(false);
+    const [alertConfigs, setAlertConfigs] = useState({
+        show:false,
+        message:'',
+        status:'',
+        title:''
+      });
+      
+      const handleShowAlert = (title,status,message) => {
+        setAlertConfigs({
+          show:true,
+          title:title,
+          status:status,
+          message:message
+        })
+        // Auto hide after 3 seconds
+        // setTimeout(setAlertConfigs(prev=>({...prev,['show']:false})), 3000);
+      };
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -19,10 +38,10 @@ const AdminLogin = () => {
             const res = await api.post('api/admin/loginAdmin', formData);
             await login(res.data.admin);
         } catch (error) {
-            if (!error.response) {
-                alert("Error: Check your internet connection");
+            if (!error.status) {
+                handleShowAlert("Error","error","check your internet connection and try again")
             } else {
-                alert("Error: " + error.message);
+                handleShowAlert("Error","error",error.response.data.message)
             }
             console.log(error);
         }
@@ -38,6 +57,13 @@ const AdminLogin = () => {
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen m-0 p-0 min-w-full bg-gradient-to-br from-blue-50 to-indigo-50">
+              <CustomAlert
+        show={alertConfigs.show}
+        title={alertConfigs.title}
+        message={alertConfigs.message}
+        status={alertConfigs.status} // or "error"
+        onClose={() => setAlertConfigs(prev=>({...prev,['show']:false}))}
+      />
             <div className="w-full md:w-2/3 relative overflow-hidden">
                 <div className="absolute inset-0 bg-black/40 z-10" />
                 <img

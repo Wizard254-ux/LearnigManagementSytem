@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useAuthApi, api } from "../Auth/api";
 import { useAuth } from "../Auth/AuthProvider";
+import CustomAlert from "./CustomAlert";
+
 
 const Register = () => {
   const [role, setRole] = useState("student");
@@ -14,6 +16,24 @@ const Register = () => {
   const {createLecAccount}=useAuthApi()
   const {login}=useAuth()
   const [loading,setLoading]=useState(false)
+  
+  const [alertConfigs, setAlertConfigs] = useState({
+    show:false,
+    message:'',
+    status:'',
+    title:''
+  });
+  
+  const handleShowAlert = (title,status,message) => {
+    setAlertConfigs({
+      show:true,
+      title:title,
+      status:status,
+      message:message
+    })
+    // Auto hide after 3 seconds
+    // setTimeout(setAlertConfigs(prev=>({...prev,['show']:false})), 3000);
+  };
 
 
   const handleChange = (e) => {
@@ -68,11 +88,13 @@ const Register = () => {
         await login(response.data.student)
       } catch (error) {
         if(!error.status){
-          alert('check your internet connection and try again')
+          handleShowAlert("Error","error","check your internet connection and try again")
+
         }
-        alert('An error occured try again later')
+        handleShowAlert("Error","error",error.response.data.message)
         console.error("Registration failed:", error.response?.data || error.message);
       }
+      setLoading(false)
     } else {
       try {
         setLoading(true)
@@ -86,17 +108,24 @@ const Register = () => {
         console.log("Registration successful:", response);
       } catch (error) {
         if(!error.status){
-          alert('check your internet connection and try again')
+          handleShowAlert("Error","error","check your internet connection and try again")
         }
-        alert('Error ',error.message)
+        handleShowAlert("Error","error",error.response.data.message)
         console.error("Registration failed:", error.response?.data || error.message);
       }
-    }
     setLoading(false)
+    }
   };
 
   return (
     <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded shadow">
+        <CustomAlert
+        show={alertConfigs.show}
+        title={alertConfigs.title}
+        message={alertConfigs.message}
+        status={alertConfigs.status} // or "error"
+        onClose={() => setAlertConfigs(prev=>({...prev,['show']:false}))}
+      />
       <h2 className="text-2xl font-bold mb-4">Register as {role === "student" ? "Student" : "Lecturer"}</h2>
       
       {/* Role Selection */}

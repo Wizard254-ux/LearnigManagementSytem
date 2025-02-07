@@ -9,6 +9,8 @@ import NavBar from '../Components/NavBar';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../Components/Footer';
 import { api } from '../Auth/api';
+import CustomAlert from '../Components/CustomAlert';
+
 
 const Dashboard = () => {
   const [isSyncing, setIsSyncing] = useState(false);
@@ -16,6 +18,24 @@ const Dashboard = () => {
   const [courseData, setCourseData] = useState(null); // State to store fetched course data
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
+  const [alertConfigs, setAlertConfigs] = useState({
+    show:false,
+    message:'',
+    status:'',
+    title:''
+  });
+  
+  const handleShowAlert = (title,status,message) => {
+    setAlertConfigs({
+      show:true,
+      title:title,
+      status:status,
+      message:message
+    })
+    // Auto hide after 3 seconds
+    // setTimeout(setAlertConfigs(prev=>({...prev,['show']:false})), 3000);
+  };
+
 
   // Fetch course data from the backend
   useEffect(() => {
@@ -26,7 +46,10 @@ const Dashboard = () => {
         setCourseData(response.data); // Store the fetched data in state
       } catch (error) {
         console.log(error);
-        alert('An error occurred. Please try again.');
+        if(!error.status){
+          handleShowAlert("Error","error","check your internet connection and try again")
+        }
+        handleShowAlert("Error","error",error.response.data.message)
       }
     };
 
@@ -70,6 +93,13 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <NavBar />
+      <CustomAlert
+        show={alertConfigs.show}
+        title={alertConfigs.title}
+        message={alertConfigs.message}
+        status={alertConfigs.status} // or "error"
+        onClose={() => setAlertConfigs(prev=>({...prev,['show']:false}))}
+      />
       
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">

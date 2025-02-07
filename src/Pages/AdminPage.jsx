@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Search, Plus, Edit2, X, Check,Trash } from 'lucide-react';
 import NavBar from '../Components/NavBar';
 import Footer from '../Components/Footer';
+import CustomAlert from '../Components/CustomAlert';
 import {
   fetchLecturers,
   addLecturer,
@@ -34,49 +35,78 @@ const LecturerManagementSystem = () => {
   const [selectedCourse, setSelectedCourse] = useState('');
   const [addedUnits, setAddedUnits] = useState([]);
   const [removedUnits, setRemovedUnits] = useState([]);
+  const [alertConfigs, setAlertConfigs] = useState({
+    show:false,
+    message:'',
+    status:'',
+    title:''
+  });
+  
+  const handleShowAlert = (title,status,message) => {
+    setAlertConfigs({
+      show:true,
+      title:title,
+      status:status,
+      message:message
+    })
+    // Auto hide after 3 seconds
+    // setTimeout(setAlertConfigs(prev=>({...prev,['show']:false})), 3000);
+  };
+
 
   useEffect(() => {
-    fetchDepartments().then(data => {
-      const departmentsData = data.map(each => {
-        return {
-          name: each.name,
-          id: each._id,
-          shortName: each.name,
-          courses: each.courses.map(course => {
-            return { name: course.name, id: course._id, shortName: course.name }
-          })
-        }
-      })
-      setDepartments(departmentsData);
-    });
+    try{
+      fetchDepartments().then(data => {
+        const departmentsData = data.map(each => {
+          return {
+            name: each.name,
+            id: each._id,
+            shortName: each.name,
+            courses: each.courses.map(course => {
+              return { name: course.name, id: course._id, shortName: course.name }
+            })
+          }
+        })
+        setDepartments(departmentsData);
+      });
 
-    fetchUnits().then(data => {
-      console.log('fetched units ',data)
-      const unitsData = data.map(each => {
-        return { name: each.name, id: each._id, course: each.course.name, code: each.code }
-      })
-      console.log('units data',unitsData)
-      setUnits(unitsData);
-    });
+      fetchUnits().then(data => {
+        console.log('fetched units ',data)
+        const unitsData = data.map(each => {
+          return { name: each.name, id: each._id, course: each.course.name, code: each.code }
+        })
+        console.log('units data',unitsData)
+        setUnits(unitsData);
+      });
 
-    fetchLecturers().then(data => {
-      const lecturersData = data.map(each => {
-        return {
-          name: each.name,
-          id: each._id,
-          email:each.email,
-          phoneNumber:each.phoneNumber,
-          staffNumber: each.staffNumber,
-          department: { name: each.department.name, id: each.department._id },
-          isActive: each.isActive,
-          units: each.units.map(e => {
-            return { name: e.name, id: e._id }
-          })
-        }
-      })
-      console.log('settign lecturer ',lecturersData)
-      setLecturers(lecturersData);
-    });
+      fetchLecturers().then(data => {
+        const lecturersData = data.map(each => {
+          return {
+            name: each.name,
+            id: each._id,
+            email:each.email,
+            phoneNumber:each.phoneNumber,
+            staffNumber: each.staffNumber,
+            department: { name: each.department.name, id: each.department._id },
+            isActive: each.isActive,
+            units: each.units.map(e => {
+              return { name: e.name, id: e._id }
+            })
+          }
+        })
+        console.log('settign lecturer ',lecturersData)
+        setLecturers(lecturersData);
+      });
+
+    }catch (error) {
+      console.log(error);
+      if(!error.status){
+        handleShowAlert("Error","error","check your internet connection and try again")
+      }
+      handleShowAlert("Error","error",error.response.data.message)
+    }
+
+
   }, []);
 
   const filteredLecturers = lecturers.filter(
@@ -113,9 +143,9 @@ const LecturerManagementSystem = () => {
     } catch (error) {
       console.log(error);
       if(!error.status){
-        alert('check your internet connection and try again')
+        handleShowAlert("Error","error","check your internet connection and try again")
       }
-      alert('Error ',error.message)
+      handleShowAlert("Error","error",error.response.data.message)
       setLoading(false)
     }
   };
@@ -138,32 +168,51 @@ const LecturerManagementSystem = () => {
     if (originalLecturer.isActive !== editingLecturer.isActive) changes.isActive = editingLecturer.isActive;
     setLoading(true)
     console.log('Changes made:', changes);
+try{
 
+  updateLecturer(changes).then(() => {
+    setLecturers(
+      lecturers.map((lecturer) =>
+        lecturer.id === editingLecturer.id ? editingLecturer : lecturer
+      )
+    );
+    setShowEditModal(false);
+    setAddedUnits([]);
+    setRemovedUnits([]);
+    setLoading(false)
+  });
+}catch (error) {
+  console.log(error);
+  if(!error.status){
+    handleShowAlert("Error","error","check your internet connection and try again")
+  }
+  handleShowAlert("Error","error",error.response.data.message)
+  setLoading(false)
+}
     // Send changes to the backend
-    updateLecturer(changes).then(() => {
-      setLecturers(
-        lecturers.map((lecturer) =>
-          lecturer.id === editingLecturer.id ? editingLecturer : lecturer
-        )
-      );
-      setShowEditModal(false);
-      setAddedUnits([]);
-      setRemovedUnits([]);
-      setLoading(false)
-    });
   };
 
   const handleToggleStatus = (lecturer) => {
     console.log('revers of whats theor ',!lecturer.isActive)
-    updateLecturer({isActive:!lecturer.isActive,lecturerId:lecturer.id}).then(()=>{
+    try{
+      updateLecturer({isActive:!lecturer.isActive,lecturerId:lecturer.id}).then(()=>{
+  
+        setLecturers(
+          lecturers.map((l) =>
+            l.id === lecturer.id ? { ...l, isActive: !l.isActive } : l
+        )
+      );
+      })
 
-      setLecturers(
-        lecturers.map((l) =>
-          l.id === lecturer.id ? { ...l, isActive: !l.isActive } : l
-      )
-    );
-    })
-    return;
+    }catch (error) {
+      console.log(error);
+      if(!error.status){
+        handleShowAlert("Error","error","check your internet connection and try again")
+      }
+      handleShowAlert("Error","error",error.response.data.message)
+      setLoading(false)
+    }
+    
   };
 
   const getAvailableUnits = (course) => {
@@ -236,8 +285,12 @@ const LecturerManagementSystem = () => {
         prevLecturers.filter(lecturer => lecturer.id !== lecturerId)
       );
     } catch (error) {
-      alert("Error ",error)
-      console.error('Error deleting lecturer:', error);
+      console.log(error);
+      if(!error.status){
+        handleShowAlert("Error","error","check your internet connection and try again")
+      }
+      handleShowAlert("Error","error",error.response.data.message)
+      setLoading(false)
     }
   };
 
@@ -245,6 +298,13 @@ const LecturerManagementSystem = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <NavBar />
+      <CustomAlert
+        show={alertConfigs.show}
+        title={alertConfigs.title}
+        message={alertConfigs.message}
+        status={alertConfigs.status} // or "error"
+        onClose={() => setAlertConfigs(prev=>({...prev,['show']:false}))}
+      />
       <div className="px-2 md:px-11 flex-1 mb-6">
         <div className="mb-6 mt-4">
           <h1 className="text-2xl font-bold text-gray-800">Admin Management </h1>
