@@ -91,7 +91,7 @@ const Dashboard = () => {
   ) || [];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gray-100 w-screen flex flex-col">
       <NavBar />
       <CustomAlert
         show={alertConfigs.show}
