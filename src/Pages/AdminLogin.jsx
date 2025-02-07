@@ -47,27 +47,33 @@ const AdminLogin = () => {
                 />
                 <div className="absolute top-0 inset-0 flex flex-col justify-center items-center md:items-start z-20 p-8 pb-[45%] md:p-16">
                     <div className="w-28 h-28 md:h-36 md:w-36 bg-white/20 backdrop-blur-sm rounded-full mb-8 flex items-center justify-center">
-                        <GraduationCap className="w-16 h-16 text-white" />
+                        <img
+                            src="mksuLogo.png"
+                            alt="Machakos University Logo"
+                            className="h-28 w-28 md:h-36 md:w-36 rounded-full shadow-lg"
+                        />
                     </div>
-                    <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+                    <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 text-center md:text-left">
                         LMS Administration Portal
                     </h1>
-                    <p className="text-lg md:text-xl text-white/90 max-w-xl mb-8">
+                    <p className="text-lg md:text-xl text-white/90 max-w-xl mb-8 text-center md:text-left">
                         Access the central hub for managing courses, student progress, and academic resources. 
                         Shape the future of education through our comprehensive learning platform.
                     </p>
-                    <div className="hidden md:grid grid-cols-3 gap-4 w-full max-w-2xl">
-                        <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 border border-white/30">
+                    
+                    {/* Grid section - now visible on all screens */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-2xl mx-auto md:mx-0">
+                        <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 border border-white/30 transform transition-all hover:scale-105 hover:bg-white/30">
                             <BookOpen className="w-6 h-6 text-white mb-2" />
                             <p className="text-white font-semibold">Course Management</p>
                             <p className="text-white/80 text-sm">Organize and monitor academic content</p>
                         </div>
-                        <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 border border-white/30">
+                        <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 border border-white/30 transform transition-all hover:scale-105 hover:bg-white/30">
                             <Users className="w-6 h-6 text-white mb-2" />
                             <p className="text-white font-semibold">User Administration</p>
                             <p className="text-white/80 text-sm">Manage faculty and student accounts</p>
                         </div>
-                        <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 border border-white/30">
+                        <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 border border-white/30 transform transition-all hover:scale-105 hover:bg-white/30 sm:col-span-2 md:col-span-1">
                             <Lock className="w-6 h-6 text-white mb-2" />
                             <p className="text-white font-semibold">Secure Access</p>
                             <p className="text-white/80 text-sm">Protected administrative controls</p>
