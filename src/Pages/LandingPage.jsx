@@ -78,7 +78,7 @@ export default function Home() {
       <ArrowRight size={20} />
     </button> */}
         <img
-          src="https://www.mksu.ac.ke/wp-content/uploads/2018/08/cropped-logohead2.png"
+          src="homeLogo.png"
           alt="Machakos University Logo"
           className="h-28 md:h-36 w-28 md:w-36 rounded-full mb-4 shadow-lg"
         />

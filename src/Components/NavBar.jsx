@@ -52,7 +52,7 @@ const filteredNavLinks = navLinks.filter(link =>
               </button>
               <div className="flex items-center">
                 <img
-                  src="https://www.mksu.ac.ke/wp-content/uploads/2018/08/cropped-logohead2.png"
+                  src="mksuLogo.png"
                   alt="Logo"
                   className="h-12 w-12 md:h-16 md:w-16 rounded-full mt-2"
                 />

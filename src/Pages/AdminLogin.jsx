@@ -42,7 +42,7 @@ const AdminLogin = () => {
                 <div className="absolute inset-0 bg-black/40 z-10" />
                 <img
                     className="h-screen w-full object-cover"
-                    src="https://media.istockphoto.com/id/2190684362/photo/diagonal-3d-laptop-with-e-learning-text-in-bold-minimalist-design-3d-rendering.jpg?s=1024x1024&w=is&k=20&c=yWPDIybSMcemhW_kR-HDTiEBNsWRnxeY-wpdlmf4djA="
+                    src="eLearnignBackground.jpg"
                     alt="Digital Learning Environment"
                 />
                 <div className="absolute top-0 inset-0 flex flex-col justify-center items-center md:items-start z-20 p-8 pb-[45%] md:p-16">
