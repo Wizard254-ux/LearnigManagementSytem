@@ -33,7 +33,7 @@ const HomePage = () => {
             <div className="md:w-1/2 hidden md:flex justify-center">
               <div className="bg-white/20 rounded-lg shadow-2xl flex items-center justify-center md:ml-[10%]">
                 <img
-                  src="https://www.fixusjobs.com/wp-content/uploads/2018/07/machakos-university.jpg"
+                  src="mksuLogoName.jpg"
                   alt="Machakos University Logo"
                   className="h-full w-full bg-transparent rounded-md"
                 />
