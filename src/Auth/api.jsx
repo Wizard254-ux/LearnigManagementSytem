@@ -29,10 +29,12 @@ api.interceptors.response.use(
         // Retry the original request
         return api(originalRequest);
       } catch (refreshError) {
+        console.log('calling global logout')
         getGlobalLogout()
         return Promise.reject(refreshError);
       }
     }
+    console.log('calling global logout')
     getGlobalLogout()
     return Promise.reject(error);
   }

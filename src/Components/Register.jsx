@@ -75,6 +75,7 @@ const Register = () => {
       }
     } else {
       try {
+        setLoading(true)
         let data = {
           username: formData.username,
           email: formData.email,
