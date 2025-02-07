@@ -12,7 +12,7 @@ const HomePage = () => {
       <NavBar />
 
       {/* Hero Section */}
-      <div className="relative bg-[url('compRoom.webp')] bg-cover bg-center py-24">
+      <div className="relative bg-[url('https://images.pexels.com/photos/3747481/pexels-photo-3747481.jpeg?auto=compress&cs=tinysrgb&w=600')] bg-cover bg-center py-24">
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r "></div>
         <div className="relative max-w-7xl mx-auto px-4">
