@@ -3,8 +3,8 @@ import { useAuth } from './AuthProvider';
 import { getGlobalLogout } from './AuthProvider';
 // Create axios instance
 export const api = axios.create({
-  // baseURL: 'https://lmsbackendexpress.onrender.com/',
-  baseURL: 'http://localhost:5000/',
+  baseURL: 'https://lmsbackendexpress.onrender.com/',
+  // baseURL: 'http://localhost:5000/',
   withCredentials: true, // Important for sending cookies
   headers: {
     'Content-Type': 'application/json',
