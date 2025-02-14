@@ -11,6 +11,7 @@ import LecturerProfile from "./Pages/StaffPage";
 import Admin from "./Pages/AdminPage";
 import AdminLogin from "./Pages/AdminLogin";
 import ProtectedRoute from "./Auth/ProtectedRoutes";
+import AdminCUSpage from "./Pages/AdminCUSpage";
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
       <Route path="/Units/:unitId" element={<UnitDetail />} />
       <Route path="/ExamsBank" element={< ExamsBank/>} />
       <Route path="/Staff" element={< LecturerProfile/>} />
+      <Route path="/Entry346512" element={< AdminCUSpage/>} />
       <Route path="/Admin" element={< Admin/>} />
       </Route>
       <Route path="/AdminLogin" element={< AdminLogin/>} />

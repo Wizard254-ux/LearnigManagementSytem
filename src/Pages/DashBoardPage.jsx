@@ -67,7 +67,7 @@ const Dashboard = () => {
 
   // Handle unit click
   const handleUnitClick = (unitId) => {
-    // navigate(`/Units/${unitId}`);
+    navigate(`/Units/${unitId}`);
     return
   };
 
@@ -76,7 +76,8 @@ const Dashboard = () => {
     code: unit.code, // Use unit ID as the code
     name: unit.name,
     status: 'synced', // Default status (can be updated based on backend data)
-    lastUpdated: '1 hour ago' // Default last updated time
+    lastUpdated: '1 hour ago', // Default last updated time
+    id:unit.id
   })) || [];
 
   // Extract upcoming deadlines from the fetched data
@@ -91,7 +92,7 @@ const Dashboard = () => {
   ) || [];
 
   return (
-    <div className="min-h-screen bg-gray-100 w-screen flex flex-col">
+    <div className="min-h-screen bg-gray-100  flex flex-col">
       <NavBar />
       <CustomAlert
         show={alertConfigs.show}
@@ -120,7 +121,7 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4">
+            {/* <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4">
               <div className="flex items-center gap-3">
                 <Award className="h-8 w-8" />
                 <div>
@@ -129,7 +130,7 @@ const Dashboard = () => {
                   <p className="text-xs opacity-75">Across All Units</p>
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4">
               <div className="flex items-center gap-3">
                 <BarChart2 className="h-8 w-8" />
@@ -164,7 +165,7 @@ const Dashboard = () => {
             {registeredUnits.map((unit) => (
               <div 
                 key={unit.code}
-                onClick={() => handleUnitClick(unit.code)}
+                onClick={() => handleUnitClick(unit.id)}
                 className="p-6 hover:bg-gray-50 cursor-pointer transition-colors"
               >
                 <div className="flex justify-between items-center">

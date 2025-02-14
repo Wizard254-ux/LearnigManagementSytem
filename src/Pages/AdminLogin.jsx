@@ -37,7 +37,10 @@ const AdminLogin = () => {
         try {
             const res = await api.post('api/admin/loginAdmin', formData);
             await login(res.data.admin);
+            setLoading(false)
+
         } catch (error) {
+            setLoading(false);
             if (!error.status) {
                 handleShowAlert("Error","error","check your internet connection and try again")
             } else {
@@ -45,7 +48,6 @@ const AdminLogin = () => {
             }
             console.log(error);
         }
-        setLoading(false);
     };
 
     const handleChange = (e) => {

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { 
-  Menu, Bell, MessageCircle, ChevronDown, X, Home, 
+  Menu, X, Home, 
   LayoutDashboard, BookOpen, GraduationCap, Settings, 
-  HelpCircle, LogOut, 
-  LogOutIcon
+  HelpCircle, 
+  LogOutIcon,User
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Auth/AuthProvider';
@@ -13,6 +13,7 @@ export default function NavBar() {
   const navigate = useNavigate();  // Initialize the navigate function
   const user=JSON.parse(localStorage.getItem('user'))
   const {logout}=useAuth()
+
   
   const navLinks = [
     { name: 'Home', path: '/Home', icon: <Home size={20} />,roles:["student","lecturer","admin"] },
@@ -21,6 +22,7 @@ export default function NavBar() {
   { name: 'My Units', path: '/Units', icon: <GraduationCap size={20} />,roles:["student"] },
   { name: 'Lecturer Profile', path: '/Staff', icon: <GraduationCap size={20} />, roles: ['lecturer'] },
   { name: 'Admin', path: '/Admin', icon: <GraduationCap size={20} />, roles: ['admin'] },
+  { name: 'Entries ', path: '/Entry346512', icon: <GraduationCap size={20} />, roles: ['admin'] },
 ];
 
 // Filter links based on the user's role
@@ -52,7 +54,7 @@ const filteredNavLinks = navLinks.filter(link =>
               </button>
               <div className="flex items-center">
                 <img
-                  src="mksuLogo.png"
+                  src="/mksuLogo.png"
                   alt="Logo"
                   className="h-12 w-12 md:h-16 md:w-16 rounded-full mt-2"
                 />
@@ -82,11 +84,11 @@ const filteredNavLinks = navLinks.filter(link =>
 
             {/* Right side icons */}
             <div className="flex items-center space-x-4">
-              <Bell className="h-6 w-6 cursor-pointer hover:text-indigo-200" />
-              <MessageCircle className="h-6 w-6 cursor-pointer hover:text-indigo-200" />
+             
+              <User className="h-6 w-6 cursor-pointer hover:text-indigo-200" />
               <div className="flex items-center space-x-1 cursor-pointer hover:text-indigo-200">
-                <span>BN</span>
-                <ChevronDown className="h-4 w-4" />
+              <GraduationCap size={20} />
+                <span> {user.username}</span>
               </div>
             </div>
           </div>
@@ -106,8 +108,8 @@ const filteredNavLinks = navLinks.filter(link =>
               className="h-12 w-12 rounded-full border-2 border-white"
             /> */}
             <div>
-              <h3 className="font-semibold">John Doe</h3>
-              <p className="text-sm text-indigo-200">Student</p>
+              <h3 className="font-semibold">{user.username}</h3>
+              <p className="text-sm text-indigo-200">{user.role}</p>
             </div>
           </div>
         </div>
@@ -119,7 +121,7 @@ const filteredNavLinks = navLinks.filter(link =>
             <button
               key={link.name}
               onClick={() => handleNavigation(link.path)}  // Use button with onClick for navigation
-              className="flex items-center space-x-3 px-6 py-3 text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+              className="flex w-[90%] items-center space-x-3 px-2 py-3 text-gray-600 hover:bg-indigo-200 hover:text-indigo-700 transition-colors"
             >
               {link.icon}
               <span>{link.name}</span>
@@ -133,7 +135,7 @@ const filteredNavLinks = navLinks.filter(link =>
             <button
               key={link.name}
             //   onClick={() => handleNavigation(link.path)}  // Use button with onClick for navigation
-              className="flex items-center space-x-3 px-6 py-3 text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+              className="flex w-[90%] items-center space-x-3 px-6 py-3 text-gray-600 hover:bg-indigo-200 hover:text-indigo-700 transition-colors"
             >
               {link.icon}
               <span>{link.name}</span>
@@ -142,7 +144,7 @@ const filteredNavLinks = navLinks.filter(link =>
             <button
               key={"Logout"}
               onClick={logout}  // Use button with onClick for navigation
-              className="flex items-center space-x-3 px-6 py-3 text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+              className="flex items-center w-[90%] space-x-3 px-6 py-3 text-gray-600 hover:bg-indigo-200 hover:text-indigo-700 transition-colors"
             >
               <LogOutIcon size={20} color='red' />
               <span>Log-out</span>

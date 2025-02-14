@@ -382,13 +382,175 @@ const LecturerDashboard = () => {
     
     fetchAssignments();
   }, []);
+
+  const [notes, setNotes] = useState({});
+const [newNote, setNewNote] = useState({
+  unit: "",
+  title: "",
+  file: null
+});
+
+// Add this function after your existing useEffect hooks
+useEffect(() => {
+  const fetchNotes = async () => {
+    try {
+      const response = await api.get('api/lecNotes/getNotes');
+      console.log('notes get response ',response.data)
+      const notesByUnit = {};
+      const { notes: fetchedNotes } = response.data.data;
+      const fetchedGroupedNotes = response.data.data.assignments;
+      
+      // Object.keys(fetchedNotes).forEach(unitCode => {
+      //   notesByUnit[unitCode] = fetchedNotes[unitCode].map(note => ({
+      //     id: note.id,
+      //     title: note.Title,
+      //     fileNames: note.fileNames,
+      //     _id: note._id
+      //   }));
+      // });
+      
+      setNotes(fetchedGroupedNotes);
+    } catch (error) {
+      console.log(error);
+      if(!error.status){
+        handleShowAlert("Error","error","check your internet connection and try again")
+      }
+      handleShowAlert("Error","error",error.response.data.message)
+    }
+  };
+  
+  fetchNotes();
+}, []);
+
+// Add these handler functions
+const handleNoteUpload = (e) => {
+  const { name, value, files } = e.target;
+  
+  if (name === 'file') {
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    ];
+
+    const filesArray = Array.from(files);
+    const invalidFiles = filesArray.filter(file => !allowedTypes.includes(file.type));
+
+    if (invalidFiles.length > 0) {
+      alert('Please upload only document files (PDF, DOC, DOCX, TXT, PPT, PPTX)');
+      e.target.value = '';
+      return;
+    }
+
+    setNewNote(prev => ({
+      ...prev,
+      file: filesArray
+    }));
+  } else {
+    setNewNote(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  }
+};
+
+const submitNote = async () => {
+  if (!newNote.unit || !newNote.title || !newNote.file || newNote.file.length === 0) {
+    alert("Please fill in all note details and upload at least one file");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('unit', newNote.unit);
+  formData.append('title', newNote.title);
+  
+  newNote.file.forEach(file => {
+    formData.append('files', file);
+  });
+
+  try {
+    const response = await api.post('/api/lecNotes/postNotes', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+   console.log('repsonse ',response.data)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+
+    const newNoteEntry = {
+      id:response.data.notes.id,
+      title:newNote.title,
+      fileNames: newNote.file.map(file => file.name)
+    };
+
+    setNotes(prev => ({
+      ...prev,
+      [newNote.unit]: [...(prev[newNote.unit] || []), newNoteEntry]
+    }));
+
+    setNewNote({
+      unit: "",
+      title: "",
+      file: null
+    });
+
+    handleShowAlert("Success", "success", "Note uploaded successfully!");
+
+  } catch (error) {
+    console.log(error.response);
+    handleShowAlert("Error", "error", error.response?.data?.message || "Failed to upload note");
+  }
+};
+
+const deleteNote = async (unit, noteId) => {
+  const confirmDelete = window.confirm('Are you sure you want to delete this note?');
+  
+  if (!confirmDelete) {
+    return;
+  }
+
+  try {
+    // Log the noteId being sent
+    console.log('Deleting note with ID:', noteId);
+    
+    await api.delete(`/api/lecNotes/deleteNotes/${noteId}`);
+
+    // Update local state only after successful deletion
+    setNotes(prevNotes => {
+      const updatedNotes = { ...prevNotes };
+      if (updatedNotes[unit] && Array.isArray(updatedNotes[unit])) {
+        console.log('Before deletion:', updatedNotes[unit]);
+        updatedNotes[unit] = updatedNotes[unit].filter(
+          note => note.id !== noteId
+        );
+        console.log('After deletion:', updatedNotes[unit]);
+      }
+      return updatedNotes;
+    });
+
+    handleShowAlert("Success", "success", "Note deleted successfully!");
+    
+  } catch (error) {
+    console.error('Delete error:', error);
+    handleShowAlert(
+      "Error", 
+      "error", 
+      error.response?.data?.message || "Failed to delete note"
+    );
+  }
+};
   
   
 
   console.log('teaching Units',teachingUnits)
 
   return (
-    <div className="min-h-screen bg-indigo-50 flex flex-col">
+    <div className="min-h-screen bg-indigo-50 w-screen flex flex-col">
       <NavBar/>
       <CustomAlert
         show={alertConfigs.show}
@@ -431,7 +593,7 @@ const LecturerDashboard = () => {
 
       <div className="max-w-7xl mx-auto px-6 py-8 flex-1">
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 max-w-full">
           <StatsCard 
             title="Total Units" 
             value={totalUnits} 
@@ -449,8 +611,70 @@ const LecturerDashboard = () => {
           />
         </div>
 
+        {/* Notes Management */}
+<div className="bg-white rounded-xl shadow-md mb-8 max-w-full">
+  <div className="p-6 border-b border-gray-200">
+    <div className="flex items-center">
+      <FileText className="h-6 w-6 text-indigo-600 mr-2" />
+      <h2 className="text-xl font-bold text-gray-900">Upload Course Notes</h2>
+    </div>
+  </div>
+  <div className="p-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Unit</label>
+        <select
+          name="unit"
+          value={newNote.unit}
+          onChange={handleNoteUpload}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+        >
+          <option value="">Select Unit</option>
+          {teachingUnits.map((unit) => (
+            <option key={`${unit.code}-${unit._id}`} value={unit.code}>
+              {unit.code} - {unit.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Note Title</label>
+        <input
+          type="text"
+          name="title"
+          value={newNote.title}
+          onChange={handleNoteUpload}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          placeholder="Enter note title"
+        />
+      </div>
+      <div className="col-span-2">
+        <label className="block text-sm font-medium text-gray-700">Upload Note Files</label>
+        <input
+          type="file"
+          name="file"
+          onChange={handleNoteUpload}
+          multiple={true}
+          accept=".pdf,.doc,.docx,.txt,.ppt,.pptx"
+          className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold hover:file:bg-indigo-100"
+        />
+      </div>
+      <div className="col-span-2">
+        <button
+          onClick={submitNote}
+          className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition-colors"
+        >
+          Upload Notes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
         {/* Assignment Management */}
-        <div className="bg-white rounded-xl shadow-md mb-8">
+        <div className="bg-white rounded-xl shadow-md mb-8 max-w-full">
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center">
               <Upload className="h-6 w-6 text-indigo-600 mr-2" />
@@ -526,8 +750,7 @@ const LecturerDashboard = () => {
         </div>
 
         {/* Teaching Units with Assignments */}
-        {/* Teaching Units with Assignments */}
-<div className="bg-white rounded-xl shadow-md">
+<div className="bg-white rounded-xl shadow-md max-w-full">
   <div className="p-6 border-b border-gray-200">
     <div className="flex items-center">
       <GraduationCap className="h-6 w-6 text-indigo-600 mr-2" />
@@ -602,7 +825,42 @@ const LecturerDashboard = () => {
             ) : (
               <p className="text-sm text-gray-500">No assignments posted for this unit</p>
             )}
+
+            {/* Notes for this unit */}
+<div className="mt-4">
+  <h4 className="font-semibold text-gray-700 mb-2">Course Notes</h4>
+  {notes[unit.code]?.length > 0 ? (
+    <div className="space-y-4">
+      {notes[unit.code].map((note) => (
+        <div 
+          key={note.id} 
+          className="bg-white rounded-md p-4 shadow-sm flex justify-between items-center"
+        >
+          <div>
+            <h4 className="font-semibold text-indigo-600">{note.title}</h4>
+            <div className="flex items-center text-sm text-gray-500 mt-1">
+              <Paperclip className="h-4 w-4 mr-2" />
+              {note.fileNames.join(', ')}
+            </div>
           </div>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => deleteNote(unit.code, note.id)}
+              className="text-red-600 hover:bg-red-100 p-2 rounded-full"
+              title="Delete Note"
+            >
+              <Trash2 className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p className="text-sm text-gray-500">No notes uploaded for this unit</p>
+  )}
+</div>
+          </div>
+          
         ))}
       </div>
     ))}

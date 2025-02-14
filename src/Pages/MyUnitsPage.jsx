@@ -1,117 +1,92 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, MoreVertical, Users, LayoutGrid, List } from 'lucide-react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 import NavBar from '../Components/NavBar';
 import Footer from '../Components/Footer';
-
+import { api } from '../Auth/api';
 const MyUnits = () => {
   const [viewType, setViewType] = useState('grid');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('name');
+  const [units, setUnits] = useState([]);
 
   const navigate = useNavigate(); // Initialize the navigate function
 
-  const initialCourses = [
-    {
-      id: 'SIT120',
-      title: 'Programming Methodology',
-      program: 'Bachelor of Science (Information Technology)',
-      enrolled: 156,
-      color: 'bg-blue-500'
-    },
-    {
-      id: 'SIT180',
-      title: 'Computer and Society',
-      program: 'Bachelor of Science (Information Technology)',
-      enrolled: 142,
-      color: 'bg-purple-500'
-    },
-    {
-      id: 'SIT190',
-      title: 'Foundations of Mathematics for IT',
-      program: 'Bachelor of Science (Information Technology)',
-      enrolled: 198,
-      color: 'bg-indigo-500'
-    }
-  ];
+  useEffect(() => {
+    // Fetch units from the backend
+    const fetchUnits = async () => {
+      try {
+        const response = await api.get('/api/student/units')
+        console.log(response.data)
+        setUnits(response.data.units);
+      } catch (error) {
+        console.error('Error fetching units:', error);
+      }
+    };
 
-  // Filter and sort courses
-  const filteredAndSortedCourses = initialCourses
-    .filter(course => 
-      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course.id.toLowerCase().includes(searchTerm.toLowerCase())
+    fetchUnits();
+  }, []);
+
+  // Filter and sort units
+  const filteredAndSortedUnits = units
+    .filter(unit => 
+      unit.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      unit.code.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
       if (sortBy === 'name') {
-        return a.title.localeCompare(b.title);
-      } else if (sortBy === 'id') {
-        return a.id.localeCompare(b.id);
-      } else if (sortBy === 'enrolled') {
-        return b.enrolled - a.enrolled;
+        return a.name.localeCompare(b.name);
+      } else if (sortBy === 'code') {
+        return a.code.localeCompare(b.code);
       }
       return 0;
     });
 
-  // Handle navigation on clicking a course
+  // Handle navigation on clicking a unit
   const handleUnitClick = (unitId) => {
-    // navigate(`/Units/${unitId}`); // Navigate to the detail page with the unitId
-    return;
+    navigate(`/units/${unitId}`); // Navigate to the detail page with the unitId
   };
 
-  const GridView = ({ courses }) => (
+  const GridView = ({ units }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-10 md:px-0 mb-8">
-      {courses.map((course) => (
-        <div key={course.id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-          <div className={`h-3 ${course.color}`} />
+      {units.map((unit) => (
+        <div key={unit.id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+          <div className={`h-3 bg-blue-500`} />
           <div className="p-6">
             <div className="flex justify-between items-start mb-4">
               <div>
-                        <button  className="text-indigo-600 hover:underline" onClick={() => handleUnitClick(course.id)} > 
-            <h3 className="text-lg font-semibold text-indigo-600  mb-1">
-            
-            {course.title}</h3>
-            </button>            
-                <p className="text-sm text-gray-500">{course.id}</p>
+                <button className="text-indigo-600 hover:underline" onClick={() => handleUnitClick(unit.id)}>
+                  <h3 className="text-lg font-semibold text-indigo-600 mb-1">{unit.name}</h3>
+                </button>
+                <p className="text-sm text-gray-500">{unit.code}</p>
               </div>
               <button className="text-gray-400 hover:text-gray-600">
                 <MoreVertical size={20} />
               </button>
             </div>
-            <p className="text-sm text-gray-600 mb-4">{course.program}</p>
-            <div className="flex items-center text-sm text-gray-500">
-              <Users size={16} className="mr-1" />
-              {course.enrolled} students
-            </div>
+            <p className="text-sm text-gray-600 mb-4">{unit.description}</p>
           </div>
         </div>
       ))}
     </div>
   );
 
-  const ListView = ({ courses }) => (
+  const ListView = ({ units }) => (
     <div className="flex flex-col gap-4 px-10 md:px-0 mb-8">
-      {courses.map((course) => (
-        <div key={course.id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow" >
+      {units.map((unit) => (
+        <div key={unit.id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
           <div className="flex">
-            <div className={`w-2 ${course.color}`} />
+            <div className={`w-2 bg-blue-500`} />
             <div className="flex-1 p-6">
               <div className="flex justify-between items-center">
                 <div>
-                    <button  className="text-indigo-600 hover:underline" onClick={() => handleUnitClick(course.id)} >
-
-                       
-                  <h3 className="text-lg font-semibold hover:text-indigo-600 text-gray-800 mb-1">
-                    
-                    {course.title}</h3>
-                    </button>
-                  <p className="text-sm text-gray-500">{course.id}</p>
-                  <p className="text-sm text-gray-600 mt-2">{course.program}</p>
+                  <button className="text-indigo-600 hover:underline" onClick={() => handleUnitClick(unit.id)}>
+                    <h3 className="text-lg font-semibold hover:text-indigo-600 text-gray-800 mb-1">{unit.name}</h3>
+                  </button>
+                  <p className="text-sm text-gray-500">{unit.code}</p>
+                  <p className="text-sm text-gray-600 mt-2">{unit.description}</p>
                 </div>
                 <div className="flex items-center gap-6">
-                  <div className="flex items-center text-sm text-gray-500">
-                    <Users size={16} className="mr-1" />
-                    {course.enrolled} students
-                  </div>
                   <button className="text-gray-400 hover:text-gray-600">
                     <MoreVertical size={20} />
                   </button>
@@ -143,7 +118,7 @@ const MyUnits = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
                 type="text"
-                placeholder="Search courses..."
+                placeholder="Search units..."
                 className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -156,8 +131,7 @@ const MyUnits = () => {
                 onChange={(e) => setSortBy(e.target.value)}
               >
                 <option value="name">Sort by Name</option>
-                <option value="id">Sort by ID</option>
-                <option value="enrolled">Sort by Enrollment</option>
+                <option value="code">Sort by Code</option>
               </select>
               <div className="flex border border-gray-200 rounded-lg overflow-hidden">
                 <button
@@ -179,14 +153,14 @@ const MyUnits = () => {
           </div>
         </div>
 
-        {/* Course List */}
+        {/* Unit List */}
         {viewType === 'grid' ? (
-          <GridView courses={filteredAndSortedCourses} />
+          <GridView units={filteredAndSortedUnits} />
         ) : (
-          <ListView courses={filteredAndSortedCourses} />
+          <ListView units={filteredAndSortedUnits} />
         )}
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };
