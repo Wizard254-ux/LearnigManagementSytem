@@ -70,9 +70,9 @@ const LecturerDashboard = () => {
   });
 
   const universityInfo = {
-    name: "Machakos University",
+    name: "Berlin Language School Ltd",
     department:user.department,
-    campus: "Melbourne Campus",
+    campus: "Berlin Campus",
     facultyName: "Faculty of Science & Technology"
   };
 

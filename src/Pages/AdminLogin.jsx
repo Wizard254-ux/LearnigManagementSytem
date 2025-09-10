@@ -75,11 +75,11 @@ const AdminLogin = () => {
                 />
                 <div className="absolute top-0 inset-0 flex flex-col justify-center items-center md:items-start z-20 p-8 pb-[45%] md:p-16">
                     <div className="w-28 h-28 md:h-36 md:w-36 bg-white/20 backdrop-blur-sm rounded-full mb-8 flex items-center justify-center">
-                        <img
+                        {/* <img
                             src="mksuLogo.png"
-                            alt="Machakos University Logo"
+                            alt="Berlin Language School Ltd Logo"
                             className="h-28 w-28 md:h-36 md:w-36 rounded-full shadow-lg"
-                        />
+                        /> */}
                     </div>
                     <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 text-center md:text-left">
                         LMS Administration Portal

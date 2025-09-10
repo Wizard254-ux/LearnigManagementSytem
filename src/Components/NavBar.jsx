@@ -54,7 +54,7 @@ const filteredNavLinks = navLinks.filter(link =>
               </button>
               <div className="flex items-center">
                 <img
-                  src="/mksuLogo.png"
+                  // src="/mksuLogo.png"
                   alt="Logo"
                   className="h-12 w-12 md:h-16 md:w-16 rounded-full mt-2"
                 />

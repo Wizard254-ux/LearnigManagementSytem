@@ -11,7 +11,7 @@ const LoadingScreen = () => (
       <div className="absolute inset-0 border-t-8 border-white rounded-full animate-spin"></div>
       <BookOpen className="absolute inset-0 m-auto w-12 h-12 text-white animate-pulse" />
     </div>
-    <h2 className="text-2xl font-bold text-white mb-4">Machakos University LMS</h2>
+    <h2 className="text-2xl font-bold text-white mb-4">Berlin Language School Ltd LMS</h2>
     <div className="flex items-center space-x-2">
       <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
       <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
@@ -53,22 +53,23 @@ export default function Home() {
         <img
           className="h-screen md:h-screen w-full object-cover"
           src="eLearnignBackground.jpg"
-          alt="Machakos University E-learning Platform"
+          alt="Berlin Language School Ltd E-learning Platform"
         />
         
         <div className="absolute top-0 inset-0 flex flex-col justify-center items-center md:items-start z-20 p-8 pb-[45%] md:p-16">
           <div className="h-28 absolute top-[2%] md:h-36 w-28 md:w-36 md:pt-4 rounded-full mb-[5%] shadow-lg  bg-white/20 backdrop-blur-sm flex items-center justify-center">
-          <img
+          {/* <img
           src="mksuLogo.png"
-          alt="Machakos University Logo"
+          alt="Berlin Language School Ltd Logo"
           className="h-28 absolute top-[2%] md:h-36 w-28 md:w-36  rounded-full mb-[5%] shadow-lg "
-        />          </div>
+        />    */}
+               </div>
 
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 pt-[10%] md:pt-0 animate-fade-in">
-            Machakos University LMS
+            Berlin Language School Ltd LMS
           </h1>
           <p className="text-lg md:text-xl text-white/90 max-w-xl mb-[0] md:mb-[5%] animate-fade-in-delay">
-            Welcome to Machakos University's Learning Management System.
+            Welcome to Berlin Language School Ltd's Learning Management System.
             Excellence in Training, Research, and Service to Humanity.
           </p>
           <div className="hidden md:flex gap-4 animate-fade-in-delay-2">

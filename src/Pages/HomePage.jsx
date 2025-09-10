@@ -33,8 +33,8 @@ const HomePage = () => {
             <div className="md:w-1/2 hidden md:flex justify-center">
               <div className="bg-white/20 rounded-lg shadow-2xl flex items-center justify-center md:ml-[10%]">
                 <img
-                  src="mksuLogoName.jpg"
-                  alt="Machakos University Logo"
+                  // src="mksuLogoName.jpg"
+                  alt="Berlin Language School Ltd Logo"
                   className="h-full w-full bg-transparent rounded-md"
                 />
               </div>
@@ -47,16 +47,16 @@ const HomePage = () => {
       <div className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-800 mb-6">About Machakos University</h2>
+            <h2 className="text-3xl font-bold text-gray-800 mb-6">About Berlin Language School Ltd</h2>
             <p className="text-lg text-gray-600 mb-8">
-              Machakos University is a leading institution of higher learning located in Machakos County, Kenya. 
-              The university is committed to providing quality education, research, and innovation to empower 
+              Berlin Language School Ltd is a leading institution of higher learning located in Berlin, Germany. 
+              The school is committed to providing quality education, research, and innovation to empower 
               students and contribute to societal development. With a wide range of academic programs, state-of-the-art 
-              facilities, and a vibrant student community, Machakos University is dedicated to nurturing future leaders 
+              facilities, and a vibrant student community, Berlin Language School Ltd is dedicated to nurturing future leaders 
               and professionals.
             </p>
             <p className="text-lg text-gray-600">
-              Join us at Machakos University and embark on a transformative educational journey that will shape your future.
+              Join us at Berlin Language School Ltd and embark on a transformative educational journey that will shape your future.
             </p>
           </div>
         </div>
